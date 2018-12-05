@@ -78,16 +78,16 @@ func TraceHandler(c *gin.Context) {
 func AuthDebug() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if pwd := c.Query("debug_token"); pwd != "4821726c1947cdf3eebacade98173939" {
-			return
+			c.JSON(403, map[string]string{"code": "40000", "message": "access denied"})
+			c.Abort()
 		}
 		c.Next()
 	}
 }
 
 func Route(router *gin.Engine) {
-	debugger := router.Group("/debug")
+	debugger := router.Group("/debug").Use(AuthDebug())
 	{
-		debugger.Use(AuthDebug())
 		debugger.GET("/info", InfoHandler)
 		debugger.GET("/pprof/", IndexHandler)
 		debugger.GET("/pprof/heap", HeapHandler)
