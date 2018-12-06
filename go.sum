@@ -10,6 +10,8 @@ github.com/json-iterator/go v1.1.5 h1:gL2yXlmiIo4+t+y32d4WGwOjKGYcGOuyrg46vadswD
 github.com/json-iterator/go v1.1.5/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/liamylian/jsontime v0.0.0-20181124155925-6f8248119dc1 h1:SAT6MKfIVY2LvWS/FsUKJ2M0/W8cMxj86oxaR9YgAHc=
 github.com/liamylian/jsontime v0.0.0-20181124155925-6f8248119dc1/go.mod h1:uHFWnSisG50qjJ8TLSjK4ll170WQP4t+YnD6PSZVWiI=
+github.com/liamylian/jsontime v1.0.1 h1:zM/Dxvu7X0iq9BpM2KMpGsKYEIHYDxf04z0GmcKId44=
+github.com/liamylian/jsontime v1.0.1/go.mod h1:uHFWnSisG50qjJ8TLSjK4ll170WQP4t+YnD6PSZVWiI=
 github.com/mattn/go-isatty v0.0.4 h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs=
 github.com/mattn/go-isatty v0.0.4/go.mod h1:M+lRXTBqGeGNdLjl/ufCoiOlB5xdOkqRJdNxMWT7Zi4=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
