@@ -5,6 +5,10 @@ import (
 	"github.com/verystar/golib/convert"
 )
 
+var (
+	SuccessCode int = 200
+)
+
 func getHttpStatus(c *Context, status int) int {
 	if c.HttpStatus == 0 {
 		return status
@@ -34,7 +38,7 @@ func (c *Context) Fail(code int, msg interface{}) Response {
 	return &ApiResponse{
 		HttpStatus: getHttpStatus(c, 200),
 		Context:    c.Context,
-		Retcode:    code,
+		Code:       code,
 		Msg:        message,
 	}
 }
@@ -43,7 +47,7 @@ func (c *Context) Success(data interface{}) Response {
 	return &ApiResponse{
 		HttpStatus: getHttpStatus(c, 200),
 		Context:    c.Context,
-		Retcode:    0,
+		Code:       SuccessCode,
 		Data:       data,
 		Msg:        "ok",
 	}

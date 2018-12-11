@@ -22,7 +22,7 @@ func (c *JSONResponse) Render() {
 type ApiResponse struct {
 	HttpStatus int          `json:"-"`
 	Context    *gin.Context `json:"-"`
-	Retcode    int          `json:"retcode"`
+	Code       int          `json:"code"`
 	Data       interface{}  `json:"data"`
 	Msg        string       `json:"msg"`
 }
