@@ -7,7 +7,7 @@ import (
 
 var Commands []cli.Command
 
-func Register(cmd cli.Command) {
+func RegisterCommand(cmd cli.Command) {
 	Commands = append(Commands, cmd)
 }
 
