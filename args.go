@@ -1,15 +1,15 @@
-package server
+package very
 
 import (
 	"os"
 )
 
-var ExtArgs map[string]string
-var Args []string
+var ExtCliArgs map[string]string
+var CliArgs []string
 
 func ArgsInit() {
-	ExtArgs = make(map[string]string)
-	Args = ParseArgs("config", "debug", "show-sql", "debug-tag")
+	ExtCliArgs = make(map[string]string)
+	CliArgs = ParseArgs("config", "debug", "show-sql", "debug-tag")
 }
 
 func ParseArgs(excludes ...string) []string {
@@ -21,7 +21,7 @@ func ParseArgs(excludes ...string) []string {
 			lenPrefix := len(prefix)
 			if len(arg) > lenPrefix && prefix == arg[0:lenPrefix] {
 				isFind = true
-				ExtArgs[ext] = arg[lenPrefix:]
+				ExtCliArgs[ext] = arg[lenPrefix:]
 			}
 		}
 

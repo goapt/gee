@@ -1,10 +1,9 @@
-package server
+package very
 
 import (
 	"context"
 	"os"
 
-	"github.com/ilibs/very/command"
 	"github.com/urfave/cli"
 	"github.com/verystar/golib/osutil"
 )
@@ -35,14 +34,14 @@ func (h *CliServer) Run() {
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 
-	app.Commands = command.Commands
+	app.Commands = Commands
 	app.Setup()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	app.Metadata["ctx"] = ctx
 	var args []string
 	args = append(args, app.Name)
-	args = append(args, Args...)
+	args = append(args, CliArgs...)
 
 	osutil.RegisterShutDown(func(sig os.Signal) {
 		cancel()
