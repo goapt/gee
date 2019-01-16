@@ -2,12 +2,14 @@ package very
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	goredis "github.com/go-redis/redis"
+	"github.com/verystar/logger"
 )
 
-var SessionMiddleware = func(rds *redis.Client, session ISession) HandlerFunc {
-	return func(c *Context) Response {
+var SessionMiddleware = func(rds *redis.Client, session ISession) gin.HandlerFunc {
+	var fn HandlerFunc = func(c *Context) Response {
 		c.Session = session.New()
 		// 获取session
 		token := c.Request.Header.Get("Access-Token")
@@ -27,9 +29,13 @@ var SessionMiddleware = func(rds *redis.Client, session ISession) HandlerFunc {
 		if err := json.Unmarshal([]byte(r.Val()), c.Session); err != nil {
 			return c.BusinessError("Unmarshal error:" + err.Error() + fmt.Sprintf("%+v", c.Session))
 		}
+
 		c.Next()
-		sess, _ := json.Marshal(c.Session)
-		rds.Set(token, string(sess), c.Session.Expire())
+
+		if err := c.SaveSession(rds, token); err != nil {
+			logger.Error("save session error", err)
+		}
 		return nil
 	}
+	return Middleware(fn)
 }
