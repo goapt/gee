@@ -9,10 +9,10 @@ var CliArgs []string
 
 func ArgsInit() {
 	ExtCliArgs = make(map[string]string)
-	CliArgs = ParseArgs("config", "debug", "show-sql", "debug-tag")
+	CliArgs = parseArgs("config", "debug", "show-sql", "debug-tag")
 }
 
-func ParseArgs(excludes ...string) []string {
+func parseArgs(excludes ...string) []string {
 	rs := make([]string, 0)
 	for _, arg := range os.Args[1:] {
 		isFind := false
