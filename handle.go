@@ -1,6 +1,9 @@
-package core
+package very
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"time"
+)
 
 type IHandler interface {
 	Handle(c *Context) Response
@@ -41,7 +44,8 @@ func getContext(c *gin.Context) *Context {
 	if !ok {
 		ctx1 = &Context{
 			Context:     c,
-			SessionData: &SessionData{},
+			LogInfo: make(map[string]interface{}),
+			StartTime: time.Now(),
 		}
 		c.Set(contextKey, ctx1)
 	} else {

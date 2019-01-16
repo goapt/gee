@@ -1,5 +1,4 @@
-package core
-
+package very
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
