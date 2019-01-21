@@ -12,13 +12,26 @@ var SessionMiddleware = func(rds *redis.Client, session ISession) gin.HandlerFun
 	var fn HandlerFunc = func(c *Context) Response {
 		c.Session = session.New()
 		// 获取session
-		token := c.Request.Header.Get("Access-Token")
+		var token string
+		var err error
+		for _, p := range c.Plugins {
+			if pi, ok := p.(IGetToken); ok {
+				if token, err = pi.GetToken(c); err != nil {
+					return c.Fail(40001, err)
+				}
+			}
+		}
+
+		if token == "" {
+			token = c.Request.Header.Get("Access-Token")
+		}
+
 		if token == "" {
 			return c.Fail(40001, "请先登录")
 		}
 		// 获取 session 信息
-		r := rds.Get(token)
-		var err error
+		r := rds.Get(c.Session.Prefix() + ":" + token)
+
 		if err = r.Err(); err != nil {
 			if err == goredis.Nil {
 				return c.Fail(40001, "无效Token")
