@@ -5,12 +5,11 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-redis/redis v6.15.1+incompatible
 	github.com/google/uuid v1.1.0
-	github.com/liamylian/jsontime v1.0.1
+	github.com/ilibs/jsontime v1.0.2
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/onsi/ginkgo v1.7.0 // indirect
 	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/pkg/errors v0.8.1
-	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8 // indirect
 	github.com/urfave/cli v1.20.0
 	github.com/verystar/golib v0.0.0-20181211092146-e252d9b8f4ce

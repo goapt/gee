@@ -1,8 +1,8 @@
 package very
 
 import (
-"bytes"
-"github.com/gin-gonic/gin"
+	"bytes"
+	"github.com/gin-gonic/gin"
 )
 
 type ResponseWriter struct {
@@ -13,8 +13,8 @@ type ResponseWriter struct {
 
 func NewResponseWriter(w gin.ResponseWriter) *ResponseWriter {
 	return &ResponseWriter{
-		ResponseWriter:w,
-		Buffer: &bytes.Buffer{},
+		ResponseWriter: w,
+		Buffer:         &bytes.Buffer{},
 	}
 }
 
