@@ -144,5 +144,5 @@ func (c *Context) RemoteIP() string {
 
 func (c *Context) SaveSession(rds *redis.Client, token string) error {
 	sess, _ := json.Marshal(c.Session)
-	return rds.Set(token, string(sess), c.Session.Expire()).Err()
+	return rds.Set(c.Session.Prefix()+":"+token, string(sess), c.Session.Expire()).Err()
 }

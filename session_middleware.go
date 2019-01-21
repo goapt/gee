@@ -30,7 +30,7 @@ var SessionMiddleware = func(rds *redis.Client, session ISession) gin.HandlerFun
 			return c.Fail(40001, "请先登录")
 		}
 		// 获取 session 信息
-		r := rds.Get(token)
+		r := rds.Get(c.Session.Prefix() + ":" + token)
 
 		if err = r.Err(); err != nil {
 			if err == goredis.Nil {
