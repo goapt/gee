@@ -27,6 +27,7 @@ type Context struct {
 	Session    ISession
 	LogInfo    map[string]interface{}
 	StartTime  time.Time
+	Plugins    []IPlugin
 }
 
 func (c *Context) Status(status int) {
