@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	SuccessCode int = 200
+	SuccessCode int = 10000
 )
 
 func getHttpStatus(c *Context, status int) int {
