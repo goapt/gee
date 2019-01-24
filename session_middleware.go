@@ -39,7 +39,7 @@ var SessionMiddleware = func(rds *redis.Client, session ISession) gin.HandlerFun
 			return c.BusinessError(err)
 		}
 
-		// 查询出来之后，还需要再判断ttl是否>=0 否则也是过期了
+		// 查询出来之后，还需要再判断ttl是否>0 否则也是过期了
 		if rds.TTL(c.Session.Prefix()+":"+token).Val() <= 0 {
 			return c.Fail(40001, "无效Token")
 		}
