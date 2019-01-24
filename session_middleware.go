@@ -38,6 +38,12 @@ var SessionMiddleware = func(rds *redis.Client, session ISession) gin.HandlerFun
 			}
 			return c.BusinessError(err)
 		}
+
+		// 查询出来之后，还需要再判断ttl是否>0 否则也是过期了
+		if rds.TTL(c.Session.Prefix()+":"+token).Val() <= 0 {
+			return c.Fail(40001, "无效Token")
+		}
+
 		// 登录用户解析
 		if err := json.Unmarshal([]byte(r.Val()), c.Session); err != nil {
 			return c.BusinessError("Unmarshal error:" + err.Error() + fmt.Sprintf("%+v", c.Session))
