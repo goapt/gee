@@ -2,6 +2,7 @@ package very
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"github.com/urfave/cli"
@@ -48,5 +49,8 @@ func (h *CliServer) Run() {
 	})
 
 	go osutil.WaitSignal()
-	app.Run(args)
+	err := app.Run(args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
