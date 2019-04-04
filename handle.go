@@ -43,8 +43,7 @@ func getContext(c *gin.Context) *Context {
 	var ctx1 *Context
 	if !ok {
 		ctx1 = &Context{
-			Context:     c,
-			LogInfo: make(map[string]interface{}),
+			Context:   c,
 			StartTime: time.Now(),
 		}
 		c.Set(contextKey, ctx1)
