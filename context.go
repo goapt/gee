@@ -2,7 +2,6 @@ package very
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 	"github.com/google/uuid"
 	"github.com/verystar/golib/convert"
 	"strings"
@@ -25,9 +24,7 @@ type Context struct {
 	HttpStatus int
 	Response   Response
 	Session    ISession
-	LogInfo    map[string]interface{}
 	StartTime  time.Time
-	Plugins    []IPlugin
 }
 
 func (c *Context) Status(status int) {
@@ -140,9 +137,4 @@ func (c *Context) RemoteIP() string {
 	}
 
 	return "-1"
-}
-
-func (c *Context) SaveSession(rds *redis.Client, token string) error {
-	sess, _ := json.Marshal(c.Session)
-	return rds.Set(c.Session.Prefix()+":"+token, string(sess), c.Session.Expire()).Err()
 }
