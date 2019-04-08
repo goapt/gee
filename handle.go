@@ -20,8 +20,9 @@ const contextKey = "__context"
 func Handle(handler IHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := getContext(c)
-		ctx.Response = handler.Handle(ctx)
-		if ctx.Response != nil {
+		resp := handler.Handle(ctx)
+		if resp != nil {
+			ctx.Response = resp
 			ctx.Response.Render()
 		}
 	}
@@ -30,9 +31,10 @@ func Handle(handler IHandler) gin.HandlerFunc {
 func Middleware(handler IHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := getContext(c)
-		ctx.Response = handler.Handle(ctx)
-		if ctx.Response != nil {
+		resp := handler.Handle(ctx)
+		if resp != nil {
 			c.Abort()
+			ctx.Response = resp
 			ctx.Response.Render()
 		}
 	}
