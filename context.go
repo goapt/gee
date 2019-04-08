@@ -23,6 +23,7 @@ type Context struct {
 	*gin.Context
 	HttpStatus int
 	Response   Response
+	LogInfo    map[string]interface{}
 	Session    ISession
 	StartTime  time.Time
 }
