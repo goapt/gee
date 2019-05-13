@@ -28,6 +28,14 @@ type Context struct {
 	StartTime  time.Time
 }
 
+func (c *Context) ShouldBindJSON(obj interface{}) error {
+	return c.ShouldBindWith(obj, JSONBINDING)
+}
+
+func (c *Context) BindJSON(obj interface{}) error {
+	return c.MustBindWith(obj, JSONBINDING)
+}
+
 func (c *Context) Status(status int) {
 	c.HttpStatus = status
 }
