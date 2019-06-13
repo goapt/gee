@@ -1,4 +1,4 @@
-package very
+package gee
 
 import (
 	"os"
@@ -9,7 +9,7 @@ var CliArgs []string
 
 func ArgsInit() {
 	ExtCliArgs = make(map[string]string)
-	CliArgs = parseArgs("config", "debug", "show-sql", "debug-tag","env")
+	CliArgs = parseArgs("config", "debug", "show-sql", "debug-tag", "env")
 }
 
 func parseArgs(excludes ...string) []string {

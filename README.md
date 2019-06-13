@@ -1,3 +1,3 @@
-# very
+# Gee
 Base on gin framework
-<a href="https://travis-ci.org/ilibs/very"><img src="https://travis-ci.org/ilibs/very.svg" alt="Build Status"></a>
+<a href="https://travis-ci.org/goapt/gee"><img src="https://travis-ci.org/goapt/gee.svg" alt="Build Status"></a>

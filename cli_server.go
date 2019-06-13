@@ -1,12 +1,12 @@
-package very
+package gee
 
 import (
 	"context"
 	"log"
 	"os"
 
+	"github.com/goapt/golib/osutil"
 	"github.com/urfave/cli"
-	"github.com/verystar/golib/osutil"
 )
 
 var (

@@ -1,4 +1,4 @@
-package very
+package gee
 
 import (
 	"fmt"

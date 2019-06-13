@@ -1,4 +1,4 @@
-package very
+package gee
 
 import (
 	"bytes"
@@ -45,5 +45,5 @@ func validate(obj interface{}) error {
 }
 
 var (
-	JSONBINDING          = jsonBinding{}
+	JSONBINDING = jsonBinding{}
 )

@@ -1,4 +1,5 @@
-package very
+package gee
+
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
