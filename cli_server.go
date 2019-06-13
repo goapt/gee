@@ -31,7 +31,7 @@ func (h *CliServer) Run() {
 	app := h.serv
 	app.Name = "app"
 	app.Version = VERSION
-	app.Copyright = "(c) VeryStar"
+	app.Copyright = "(c) Gee"
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 
