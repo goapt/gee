@@ -1,9 +1,10 @@
 package gee
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin/render"
 	"github.com/ilibs/jsontime"
-	"net/http"
 )
 
 type JSON struct {

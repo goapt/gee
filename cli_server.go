@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	VERSION = "v1.0.0"
+	VERSION = "v1.1.1"
 )
 
 type CliServer struct {

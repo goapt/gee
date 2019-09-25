@@ -1,11 +1,12 @@
 package gee
 
 import (
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/goapt/golib/convert"
 	"github.com/google/uuid"
-	"strings"
-	"time"
 )
 
 var (
@@ -23,8 +24,6 @@ type Context struct {
 	*gin.Context
 	HttpStatus int
 	Response   Response
-	LogInfo    map[string]interface{}
-	Session    ISession
 	StartTime  time.Time
 }
 

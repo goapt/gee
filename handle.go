@@ -1,8 +1,9 @@
 package gee
 
 import (
-	"github.com/gin-gonic/gin"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type IHandler interface {
@@ -15,7 +16,9 @@ func (h HandlerFunc) Handle(c *Context) Response {
 	return h(c)
 }
 
-const contextKey = "__context"
+const (
+	contextKey = "__gee_context__"
+)
 
 func Handle(handler IHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -43,7 +46,6 @@ func getContext(c *gin.Context) *Context {
 	if ctx, ok := c.Get(contextKey); !ok {
 		ctx1 = &Context{
 			Context:   c,
-			LogInfo:   make(map[string]interface{}),
 			StartTime: time.Now(),
 		}
 		c.Set(contextKey, ctx1)
