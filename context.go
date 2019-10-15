@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/goapt/golib/convert"
+	"github.com/goapt/golib/pagination"
 	"github.com/google/uuid"
 )
 
@@ -33,6 +34,10 @@ func (c *Context) ShouldBindJSON(obj interface{}) error {
 
 func (c *Context) BindJSON(obj interface{}) error {
 	return c.MustBindWith(obj, JSONBINDING)
+}
+
+func (c *Context) Pagination(total int64, num, page int) *pagination.Paginater {
+	return pagination.New(int(total), num, page, 3)
 }
 
 func (c *Context) Status(status int) {
