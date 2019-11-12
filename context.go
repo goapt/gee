@@ -1,6 +1,8 @@
 package gee
 
 import (
+	"bytes"
+	"io/ioutil"
 	"strings"
 	"time"
 
@@ -30,6 +32,21 @@ type Context struct {
 
 func (c *Context) ShouldBindJSON(obj interface{}) error {
 	return c.ShouldBindWith(obj, JSONBINDING)
+}
+
+// ShouldBindBodyJSON Read body data and restore request body data
+func (c *Context) ShouldBindBodyJSON(obj interface{}) error {
+	return c.ShouldBindBodyWith(obj, JSONBINDING)
+}
+
+// GetBody read body and reset body
+func (c *Context) GetBody() ([]byte, error) {
+	body, err := c.Context.GetRawData()
+	if err != nil {
+		return nil, err
+	}
+	c.Request.Body = ioutil.NopCloser(bytes.NewReader(body))
+	return body, nil
 }
 
 func (c *Context) BindJSON(obj interface{}) error {
