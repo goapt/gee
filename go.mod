@@ -3,7 +3,7 @@ module github.com/goapt/gee
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.4.0
-	github.com/goapt/golib v1.0.0
+	github.com/goapt/golib v1.0.3
 	github.com/google/uuid v1.1.1
 	github.com/ilibs/jsontime v1.0.2
 	github.com/kr/pretty v0.1.0 // indirect
