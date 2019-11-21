@@ -23,7 +23,7 @@ type DefaultValidator struct {
 	trans    ut.Translator
 }
 
-var _ binding.StructValidator = &DefaultValidator{}
+var _ binding.StructValidator = (*DefaultValidator)(nil)
 
 func (v *DefaultValidator) ValidateStruct(obj interface{}) error {
 
