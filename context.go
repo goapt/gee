@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/goapt/golib/convert"
 	"github.com/goapt/golib/pagination"
 	"github.com/google/uuid"
 )
@@ -63,10 +62,11 @@ func (c *Context) Status(status int) {
 
 func (c *Context) Fail(code int, msg interface{}) Response {
 	var message string
-	if m, ok := msg.(error); ok {
+	switch m := msg.(type) {
+	case error:
 		message = m.Error()
-	} else {
-		message = convert.ToStr(msg)
+	case string:
+		message = m
 	}
 
 	return &ApiResponse{

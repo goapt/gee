@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/goapt/golib/osutil"
 	"github.com/urfave/cli"
 )
 
 var (
-	VERSION = "v1.1.1"
+	VERSION    = "v1.1.5"
+	AppContext context.Context
 )
 
 type CliServer struct {
@@ -27,7 +27,7 @@ func (h *CliServer) Serv() *cli.App {
 	return h.serv
 }
 
-func (h *CliServer) Run() {
+func (h *CliServer) Run(cmds cli.Commands) {
 	app := h.serv
 	app.Name = "app"
 	app.Version = VERSION
@@ -35,20 +35,20 @@ func (h *CliServer) Run() {
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 
-	app.Commands = Commands
+	app.Commands = cmds
 	app.Setup()
 
 	ctx, cancel := context.WithCancel(context.Background())
-	app.Metadata["ctx"] = ctx
+	AppContext = ctx
 	var args []string
 	args = append(args, app.Name)
 	args = append(args, CliArgs...)
 
-	osutil.RegisterShutDown(func(sig os.Signal) {
+	RegisterShutDown(func(sig os.Signal) {
 		cancel()
 	})
 
-	go osutil.WaitSignal()
+	go WaitSignal()
 	err := app.Run(args)
 	if err != nil {
 		log.Fatal(err)
