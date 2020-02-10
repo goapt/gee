@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
-	github.com/go-playground/validator/v10 v10.0.1
+	github.com/go-playground/validator/v10 v10.2.0
 	github.com/goapt/golib v1.0.4
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/uuid v1.1.1
