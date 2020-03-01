@@ -30,6 +30,17 @@ func Handle(handler IHandler) gin.HandlerFunc {
 	}
 }
 
+func HandleFunc(handler func(c *Context) Response) gin.HandlerFunc {
+	return Handle(HandlerFunc(handler))
+}
+
+func Wrap(h gin.HandlerFunc) HandlerFunc {
+	return func(c *Context) Response {
+		h(c.Context)
+		return nil
+	}
+}
+
 func Middleware(handler IHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := getContext(c)

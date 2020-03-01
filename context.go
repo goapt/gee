@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/goapt/golib/pagination"
 	"github.com/google/uuid"
 )
 
@@ -50,10 +49,6 @@ func (c *Context) GetBody() ([]byte, error) {
 
 func (c *Context) BindJSON(obj interface{}) error {
 	return c.MustBindWith(obj, JSONBINDING)
-}
-
-func (c *Context) Pagination(total int64, num, page int) *pagination.Paginater {
-	return pagination.New(int(total), num, page, 3)
 }
 
 func (c *Context) Status(status int) {
@@ -114,13 +109,6 @@ func (c *Context) String(format string, values ...interface{}) Response {
 
 func (c *Context) GetToken() string {
 	return c.Request.Header.Get("Access-Token")
-}
-
-func (c *Context) BusinessError(msg interface{}) Response {
-	return c.Fail(40002, msg)
-}
-func (c *Context) SystemError(msg interface{}) Response {
-	return c.Fail(40003, msg)
 }
 
 func (c *Context) RequestId() string {

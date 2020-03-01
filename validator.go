@@ -2,14 +2,17 @@ package gee
 
 import (
 	"errors"
+	"log"
 	"reflect"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/zh"
-	ut "github.com/go-playground/universal-translator"
-	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/universal-translator"
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
+
+	"github.com/go-playground/validator/v10"
 )
 
 // use a single instance , it caches struct info
@@ -56,6 +59,28 @@ func (v *DefaultValidator) lazyinit() {
 		uni = ut.New(local, local)
 		v.trans, _ = uni.GetTranslator("zh")
 		_ = zhTranslations.RegisterDefaultTranslations(v.validate, v.trans)
+		v.translateOverride()
+	})
+}
+
+func (v *DefaultValidator) translateOverride() {
+	err := v.validate.RegisterTranslation("required", v.trans, func(ut ut.Translator) error {
+		return ut.Add("required", "缺少{0}", true) // see universal-translator for details
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("required", fe.Field())
+		return t
+	})
+
+	if err != nil {
+		log.Println("defaultValidator translateOverride error:", err)
+	}
+
+	v.validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		if name == "-" {
+			return ""
+		}
+		return name
 	})
 }
 

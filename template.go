@@ -1,6 +1,7 @@
 package gee
 
 import (
+	"errors"
 	"html/template"
 	"net/url"
 	"strconv"
@@ -8,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
 )
 
 // 格式化时间

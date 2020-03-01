@@ -9,9 +9,15 @@ import (
 )
 
 var (
-	VERSION    = "v1.1.5"
+	VERSION = "v1.2.1"
+
 	AppContext context.Context
+	appCancel  context.CancelFunc
 )
+
+func init() {
+	AppContext, appCancel = context.WithCancel(context.Background())
+}
 
 type CliServer struct {
 	serv *cli.App
@@ -28,29 +34,29 @@ func (h *CliServer) Serv() *cli.App {
 }
 
 func (h *CliServer) Run(cmds cli.Commands) {
+
 	app := h.serv
 	app.Name = "app"
 	app.Version = VERSION
-	app.Copyright = "(c) Gee"
+	app.Copyright = "(c) VeryStar"
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 
 	app.Commands = cmds
-	app.Setup()
-
-	ctx, cancel := context.WithCancel(context.Background())
-	AppContext = ctx
 	var args []string
 	args = append(args, app.Name)
 	args = append(args, CliArgs...)
+	waitCh := make(chan struct{})
 
-	RegisterShutDown(func(sig os.Signal) {
-		cancel()
-	})
+	stopSignals := make(chan os.Signal, 1)
+	app.After = func(c *cli.Context) error {
+		stopSignals <- nil
+		return nil
+	}
 
-	go WaitSignal()
-	err := app.Run(args)
-	if err != nil {
+	go WaitSignal(waitCh, stopSignals)
+	if err := app.Run(args); err != nil {
 		log.Fatal(err)
 	}
+	<-waitCh
 }

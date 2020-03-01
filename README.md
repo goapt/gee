@@ -1,3 +1,4 @@
 # Gee
+<a href="https://github.com/goapt/gee/actions"><img src="https://github.com/goapt/gee/workflows/gee/badge.svg" alt="Build Status"></a>
+
 Base on gin framework
-<a href="https://travis-ci.org/goapt/gee"><img src="https://travis-ci.org/goapt/gee.svg" alt="Build Status"></a>
