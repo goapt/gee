@@ -17,6 +17,8 @@ jobs:
         id: go
 
       - name: Test
+        env:
+          TZ: Asia/Shanghai
         run: |
           go get && make test
           bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN}}
