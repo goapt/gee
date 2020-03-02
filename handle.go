@@ -41,17 +41,6 @@ func Wrap(h gin.HandlerFunc) HandlerFunc {
 	}
 }
 
-func Middleware(handler IHandler) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ctx := getContext(c)
-		if resp := handler.Handle(ctx); resp != nil {
-			c.Abort()
-			ctx.Response = resp
-			ctx.Response.Render()
-		}
-	}
-}
-
 func getContext(c *gin.Context) *Context {
 	var ctx1 *Context
 	if ctx, ok := c.Get(contextKey); !ok {
