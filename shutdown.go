@@ -11,7 +11,7 @@ var showdownFns []func(os.Signal)
 var l = sync.Mutex{}
 
 func WaitSignal(waitCh chan struct{}, stopSignals chan os.Signal, sigs ...os.Signal) {
-	//stopSignals := make(chan os.Signal, 1)
+	// stopSignals := make(chan os.Signal, 1)
 	if len(sigs) == 0 {
 		signal.Notify(stopSignals, syscall.SIGINT, syscall.SIGTERM)
 	} else {
