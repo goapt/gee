@@ -13,7 +13,7 @@ require (
 	github.com/ilibs/jsontime v1.0.2
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/stretchr/testify v1.5.1
-	github.com/urfave/cli v1.22.3
+	github.com/urfave/cli v1.22.4
 	golang.org/x/sys v0.0.0-20200321134203-328b4cd54aae // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
