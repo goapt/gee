@@ -29,12 +29,12 @@ type Context struct {
 }
 
 func (c *Context) ShouldBindJSON(obj interface{}) error {
-	return c.ShouldBindWith(obj, JSONBINDING)
+	return c.ShouldBindWith(obj, jsonbinding)
 }
 
 // ShouldBindBodyJSON Read body data and restore request body data
 func (c *Context) ShouldBindBodyJSON(obj interface{}) error {
-	return c.ShouldBindBodyWith(obj, JSONBINDING)
+	return c.ShouldBindBodyWith(obj, jsonbinding)
 }
 
 // GetBody read body and reset body
@@ -48,7 +48,7 @@ func (c *Context) GetBody() ([]byte, error) {
 }
 
 func (c *Context) BindJSON(obj interface{}) error {
-	return c.MustBindWith(obj, JSONBINDING)
+	return c.MustBindWith(obj, jsonbinding)
 }
 
 func (c *Context) Status(status int) {

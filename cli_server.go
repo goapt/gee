@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
-	VERSION = "v1.2.1"
+	VERSION = "v1.4.0"
 
 	AppContext context.Context
 	appCancel  context.CancelFunc

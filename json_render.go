@@ -27,8 +27,8 @@ func WriteJSON(w http.ResponseWriter, obj interface{}) error {
 	if err != nil {
 		return err
 	}
-	w.Write(jsonBytes)
-	return nil
+	_, err = w.Write(jsonBytes)
+	return err
 }
 
 func (r JSON) Render(w http.ResponseWriter) (err error) {
