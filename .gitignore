@@ -15,4 +15,7 @@
 .DS_Store
 .vscode
 /vendor
-coverage.txt
+
+cover.html
+cover.out
+cover_total.out

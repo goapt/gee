@@ -6,7 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+
+	vbinding "github.com/goapt/gee/binding"
 )
+
+func init() {
+	binding.Validator = new(vbinding.DefaultValidator)
+}
 
 type Engine struct {
 	*gin.Engine
@@ -15,7 +21,6 @@ type Engine struct {
 
 func Default() *Engine {
 	engine := gin.Default()
-	binding.Validator = new(DefaultValidator)
 	return &Engine{
 		engine,
 		RouterGroup{
@@ -26,7 +31,6 @@ func Default() *Engine {
 
 func New() *Engine {
 	engine := gin.New()
-	binding.Validator = new(DefaultValidator)
 	return &Engine{
 		engine,
 		RouterGroup{
@@ -71,4 +75,14 @@ func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
+}
+
+func CreateTestContext(w http.ResponseWriter) (*Context, *Engine) {
+	c, engine := gin.CreateTestContext(w)
+	return getContext(c), &Engine{
+		engine,
+		RouterGroup{
+			&engine.RouterGroup,
+		},
+	}
 }

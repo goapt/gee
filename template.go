@@ -65,7 +65,7 @@ func Truncate(s string, n int) string {
 	return s
 }
 
-//返回资源路径
+// 返回资源路径
 func StaticUrl(url ...string) string {
 	if len(url) > 0 {
 		return "/static/" + strings.Trim(url[0], "/")
@@ -114,8 +114,8 @@ func IsPage(url ...string) bool {
 	return exists
 }
 
-//模板传递多个变量
-//{{template "userlist" Args "Users" .MostPopular "Current" .CurrentUser}}
+// 模板传递多个变量
+// {{template "userlist" Args "Users" .MostPopular "Current" .CurrentUser}}
 func Args(values ...interface{}) (map[string]interface{}, error) {
 	if len(values)%2 != 0 {
 		return nil, errors.New("invalid dict call")

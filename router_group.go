@@ -75,7 +75,12 @@ func (r *RouterGroup) HEAD(relativePath string, handlers ...HandlerFunc) IRoutes
 	return r
 }
 
-func (r *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) IRoutes {
+func (r *RouterGroup) Handle(method string, relativePath string, handlers ...HandlerFunc) IRoutes {
+	r.RouterGroup.Handle(method, relativePath, r.warp(handlers)...)
+	return r
+}
+
+func (r *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *RouterGroup {
 	return &RouterGroup{
 		r.RouterGroup.Group(relativePath, r.warp(handlers)...),
 	}

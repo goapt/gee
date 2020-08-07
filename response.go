@@ -1,64 +1,50 @@
 package gee
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/render"
+	"github.com/goapt/gee/render"
 )
 
 type Response interface {
 	Render()
 }
 
+type RenderFunc func()
+
+func (e RenderFunc) Render() { e() }
+
 type JSONResponse struct {
-	HttpStatus int          `json:"-"`
-	Context    *gin.Context `json:"-"`
-	Data       interface{}  `json:"data"`
+	Context *Context    `json:"-"`
+	Data    interface{} `json:"data"`
 }
 
 func (c *JSONResponse) Render() {
-	c.Context.Render(c.HttpStatus, JSON{render.JSON{Data: c.Data}})
+	c.Context.Render(&render.JSON{Data: c.Data})
 }
 
-type ApiResponse struct {
-	HttpStatus int          `json:"-"`
-	Context    *gin.Context `json:"-"`
-	Code       int          `json:"code"`
-	Data       interface{}  `json:"data"`
-	Msg        string       `json:"msg"`
+type XMLResponse struct {
+	Context *Context    `json:"-"`
+	Data    interface{} `json:"data"`
 }
 
-func (c *ApiResponse) Render() {
-	c.Context.Render(c.HttpStatus, JSON{render.JSON{Data: c}})
+func (c *XMLResponse) Render() {
+	c.Context.Render(&render.XML{Data: c.Data})
 }
 
 type RedirectResponse struct {
-	HttpStatus int          `json:"-"`
-	Context    *gin.Context `json:"-"`
-	Location   string
+	Context  *Context `json:"-"`
+	Location string
 }
 
 func (c *RedirectResponse) Render() {
-	c.Context.Redirect(c.HttpStatus, c.Location)
+	c.Context.Context.Redirect(getHttpStatus(c.Context, 302), c.Location)
 }
 
 type StringResponse struct {
-	HttpStatus int          `json:"-"`
-	Context    *gin.Context `json:"-"`
-	Name       string
-	Data       []interface{}
+	Context *Context `json:"-"`
+	Format  string
+	Data    []interface{}
 }
 
 func (c *StringResponse) Render() {
-	c.Context.String(c.HttpStatus, c.Name, c.Data...)
-}
-
-type HTMLResponse struct {
-	HttpStatus int          `json:"-"`
-	Context    *gin.Context `json:"-"`
-	Name       string
-	Data       interface{}
-}
-
-func (c *HTMLResponse) Render() {
-	c.Context.HTML(c.HttpStatus, c.Name, c.Data)
+	c.Context.Render(&render.String{Format: c.Format, Data: c.Data})
 }

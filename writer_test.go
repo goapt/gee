@@ -11,7 +11,7 @@ import (
 func TestResponseWriter_Write(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
-	nw := NewResponseWriter(c.Writer)
+	nw := newResponseWriter(c.Writer)
 	c.Writer = nw
 	_, err := c.Writer.WriteString("hello")
 	assert.NoError(t, err)

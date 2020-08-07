@@ -8,10 +8,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-)
 
-var (
-	SuccessCode int = 10000
+	"github.com/goapt/gee/binding"
+	"github.com/goapt/gee/render"
 )
 
 func getHttpStatus(c *Context, status int) int {
@@ -25,19 +24,25 @@ type Context struct {
 	*gin.Context
 	HttpStatus int
 	Response   Response
+	LogInfo    map[string]interface{}
 	StartTime  time.Time
+	RenderHook []render.Hook
+}
+
+func (c *Context) Render(r render.Render) {
+	r.Hooks(c.RenderHook)
+	c.Context.Render(getHttpStatus(c, 200), r)
 }
 
 func (c *Context) ShouldBindJSON(obj interface{}) error {
-	return c.ShouldBindWith(obj, jsonbinding)
+	return c.ShouldBindWith(obj, binding.JSON)
 }
 
-// ShouldBindBodyJSON Read body data and restore request body data
+// Read body data and restore request body data
 func (c *Context) ShouldBindBodyJSON(obj interface{}) error {
-	return c.ShouldBindBodyWith(obj, jsonbinding)
+	return c.ShouldBindBodyWith(obj, binding.JSON)
 }
 
-// GetBody read body and reset body
 func (c *Context) GetBody() ([]byte, error) {
 	body, err := c.Context.GetRawData()
 	if err != nil {
@@ -47,63 +52,58 @@ func (c *Context) GetBody() ([]byte, error) {
 	return body, nil
 }
 
+func (c *Context) AddRenderHook(fn render.Hook) {
+	c.RenderHook = append(c.RenderHook, fn)
+}
+
+func (c *Context) ResponseWriter() *ResponseWriter {
+	if resp, ok := c.Writer.(*ResponseWriter); ok {
+		return resp
+	}
+	return nil
+}
+
+func (c *Context) ResponseBody() []byte {
+	if resp := c.ResponseWriter(); resp != nil {
+		return resp.Body()
+	}
+	return nil
+}
+
 func (c *Context) BindJSON(obj interface{}) error {
-	return c.MustBindWith(obj, jsonbinding)
+	return c.MustBindWith(obj, binding.JSON)
 }
 
 func (c *Context) Status(status int) {
 	c.HttpStatus = status
 }
 
-func (c *Context) Fail(code int, msg interface{}) Response {
-	var message string
-	switch m := msg.(type) {
-	case error:
-		message = m.Error()
-	case string:
-		message = m
-	}
-
-	return &ApiResponse{
-		HttpStatus: getHttpStatus(c, 200),
-		Context:    c.Context,
-		Code:       code,
-		Msg:        message,
-	}
-}
-
-func (c *Context) Success(data interface{}) Response {
-	return &ApiResponse{
-		HttpStatus: getHttpStatus(c, 200),
-		Context:    c.Context,
-		Code:       SuccessCode,
-		Data:       data,
-		Msg:        "ok",
-	}
-}
-
 func (c *Context) JSON(data interface{}) Response {
 	return &JSONResponse{
-		HttpStatus: getHttpStatus(c, 200),
-		Context:    c.Context,
-		Data:       data,
+		Context: c,
+		Data:    data,
+	}
+}
+
+func (c *Context) XML(data interface{}) Response {
+	return &XMLResponse{
+		Context: c,
+		Data:    data,
 	}
 }
 
 func (c *Context) Redirect(location string) Response {
 	return &RedirectResponse{
-		HttpStatus: getHttpStatus(c, 302),
-		Context:    c.Context,
-		Location:   location,
+		Context:  c,
+		Location: location,
 	}
 }
 
 func (c *Context) String(format string, values ...interface{}) Response {
 	return &StringResponse{
-		HttpStatus: getHttpStatus(c, 200),
-		Context:    c.Context,
-		Name:       format,
-		Data:       values,
+		Context: c,
+		Format:  format,
+		Data:    values,
 	}
 }
 
@@ -121,8 +121,11 @@ func (c *Context) RequestId() string {
 	return requestId
 }
 
+func (c *Context) SetLogInfo(key string, val interface{}) {
+	c.LogInfo[key] = val
+}
+
 func (c *Context) RemoteIP() string {
-	var ip string
 	if ips := c.Request.Header.Get("X-Forwarded-For"); ips != "" {
 		ipSli := strings.Split(ips, ",")
 		for _, v := range ipSli {
@@ -144,14 +147,10 @@ func (c *Context) RemoteIP() string {
 
 			return v
 		}
-	} else if ip = c.Request.Header.Get("Client-Ip"); ip != "" {
+	} else if ip := c.Request.Header.Get("Client-Ip"); ip != "" {
 		return strings.TrimSpace(ip)
-	} else if ip = c.Request.Header.Get("Remote-Addr"); ip != "" {
+	} else if ip := c.Request.Header.Get("Remote-Addr"); ip != "" {
 		return strings.TrimSpace(ip)
-	}
-
-	if ip != "" {
-		return ip
 	}
 
 	return "-1"

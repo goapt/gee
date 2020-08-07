@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -38,7 +38,7 @@ func (h *CliServer) Run(cmds cli.Commands) {
 	app := h.serv
 	app.Name = "app"
 	app.Version = VERSION
-	app.Copyright = "(c) VeryStar"
+	app.Copyright = "(c) Gee"
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 

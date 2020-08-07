@@ -25,11 +25,24 @@ func performRequest(r http.Handler, method, path string, headers ...header) *htt
 }
 
 func TestHandle(t *testing.T) {
-	r := gin.New()
+	r := New()
 	var testHander HandlerFunc = func(c *Context) Response {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
-	r.POST("/", Handle(testHander))
+	r.POST("/", testHander)
+	w := performRequest(r, "POST", "/")
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, "{\"code\":10000,\"data\":null,\"msg\":\"ok\"}", w.Body.String())
+	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
+}
+
+func TestHandle_Wrap(t *testing.T) {
+	r := New()
+	var testHander gin.HandlerFunc = func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"code": 10000, "msg": "ok", "data": nil})
+	}
+	r.POST("/", Wrap(testHander))
 	w := performRequest(r, "POST", "/")
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -38,11 +51,11 @@ func TestHandle(t *testing.T) {
 }
 
 func TestHandleFunc(t *testing.T) {
-	r := gin.New()
+	r := New()
 	var testHander HandlerFunc = func(c *Context) Response {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
-	r.POST("/", HandleFunc(testHander))
+	r.POST("/", testHander)
 	w := performRequest(r, "POST", "/")
 
 	assert.Equal(t, http.StatusOK, w.Code)

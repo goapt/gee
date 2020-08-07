@@ -85,8 +85,13 @@ func AuthDebug() gin.HandlerFunc {
 	}
 }
 
-func DebugRoute(router *gin.Engine) {
-	debugger := router.Group("/debug").Use(AuthDebug())
+func DebugRoute(router *gin.Engine, path ...string) {
+	p := "/debug"
+	// custom router path
+	if len(path) > 0 && path[0] != "" {
+		p = path[0]
+	}
+	debugger := router.Group(p).Use(AuthDebug())
 	{
 		debugger.GET("/info", InfoHandler)
 		debugger.GET("/pprof/", IndexHandler)

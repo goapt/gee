@@ -1,4 +1,4 @@
-package gee
+package binding
 
 import (
 	"bytes"
@@ -7,7 +7,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin/binding"
+
+	"github.com/goapt/gee/internal/json"
 )
+
+type JsonBindingError struct {
+	Err error
+}
+
+func (j *JsonBindingError) Error() string {
+	return j.Err.Error()
+}
 
 type jsonBinding struct{}
 
@@ -31,11 +41,10 @@ func decodeJSON(r io.Reader, obj interface{}) error {
 	if binding.EnableDecoderUseNumber {
 		decoder.UseNumber()
 	}
-	if binding.EnableDecoderDisallowUnknownFields {
-		decoder.DisallowUnknownFields()
-	}
 	if err := decoder.Decode(obj); err != nil {
-		return err
+		return &JsonBindingError{
+			Err: err,
+		}
 	}
 	return validate(obj)
 }
@@ -47,6 +56,4 @@ func validate(obj interface{}) error {
 	return binding.Validator.ValidateStruct(obj)
 }
 
-var (
-	jsonbinding = jsonBinding{}
-)
+var JSON = jsonBinding{}

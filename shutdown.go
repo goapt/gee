@@ -33,3 +33,9 @@ func RegisterShutDown(fn func(os.Signal)) {
 	defer l.Unlock()
 	showdownFns = append(showdownFns, fn)
 }
+
+func registerLastShutDown(fn func(os.Signal)) {
+	l.Lock()
+	defer l.Unlock()
+	showdownFns = append([]func(os.Signal){fn}, showdownFns...)
+}
