@@ -1,4 +1,7 @@
+<p align="center"><img src="gee.png"/></p>
+
 # Gee The framework for Golang
+
 <a href="https://github.com/goapt/gee/actions"><img src="https://github.com/goapt/gee/workflows/build/badge.svg" alt="Build Status"></a>
 <a href="https://codecov.io/gh/goapt/gee"><img src="https://codecov.io/gh/goapt/gee/branch/master/graph/badge.svg" alt="codecov"></a>
 <a href="https://goreportcard.com/report/github.com/goapt/gee"><img src="https://goreportcard.com/badge/github.com/goapt/gee" alt="Go Report Card
