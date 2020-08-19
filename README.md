@@ -9,7 +9,7 @@
 <a href="https://opensource.org/licenses/mit-license.php" rel="nofollow"><img src="https://badges.frapsoft.com/os/mit/mit.svg?v=103"></a>
 </p>
 
-<h3 align="center">Gee The framework for Golang</h3>
+<h3 align="center">Gee is base on gin framework</h3>
 
 ## Usage
 
