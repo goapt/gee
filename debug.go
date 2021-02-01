@@ -8,9 +8,15 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+var debugToken = "058759a8c4d920576348854616a58f3f"
+
+func SetDebugToken(token string) {
+	debugToken = token
+}
+
 func authDebug() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if pwd := c.Query("debug_token"); pwd != "058759a8c4d920576348854616a58f3f" {
+		if pwd := c.Query("debug_token"); pwd != debugToken {
 			c.JSON(403, map[string]string{"code": "40000", "message": "access denied"})
 			c.Abort()
 		}

@@ -15,14 +15,14 @@ func TestDebugRoute(t *testing.T) {
 	DebugRoute(router)
 
 	{
-		w := performRequest(router, "GET", "/debug/pprof/?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
-		w := performRequest(router, "GET", "/debug/metrics?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		fmt.Println(string(body))
@@ -38,14 +38,14 @@ func TestDebugRouteWithPath(t *testing.T) {
 	DebugRoute(router, api.BasePath())
 
 	{
-		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
-		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		fmt.Println(string(body))
@@ -62,14 +62,14 @@ func TestDebugWithRouteGroup(t *testing.T) {
 	DebugWithRouteGroup(api)
 
 	{
-		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
-		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=4821726c1947cdf3eebacade98173939")
+		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
 		body, _ := ioutil.ReadAll(w.Body)
 		fmt.Println(string(body))
