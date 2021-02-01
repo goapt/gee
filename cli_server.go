@@ -50,7 +50,7 @@ func (h *CliServer) Run(cmds cli.Commands) {
 
 	stopSignals := make(chan os.Signal, 1)
 	app.After = func(c *cli.Context) error {
-		stopSignals <- nil
+		close(stopSignals)
 		return nil
 	}
 

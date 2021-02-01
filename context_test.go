@@ -186,33 +186,6 @@ func TestContext_XML(t *testing.T) {
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
 }
 
-func TestContext_RemoteIP(t *testing.T) {
-	type args struct {
-		key string
-		ip  string
-	}
-
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{name: "X-Forwarded-For", args: args{key: "X-Forwarded-For", ip: "unknow,,172.22.12.1,10.2.11.1,127.0.0.1,192.23.3.3,210.10.11.11"}, want: `210.10.11.11`},
-		{name: "Client-Ip", args: args{key: "Client-Ip", ip: "210.10.11.12"}, want: `210.10.11.12`},
-		{name: "Remote-Addr", args: args{key: "Remote-Addr", ip: "210.10.11.13"}, want: `210.10.11.13`},
-		{name: "Other", args: args{key: "Other", ip: "-1"}, want: `-1`},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ctx, _ := CreateTestContext(httptest.NewRecorder())
-			ctx.Request, _ = http.NewRequest("POST", "/", nil)
-			ctx.Request.Header.Set(tt.args.key, tt.args.ip)
-			assert.Equal(t, tt.want, ctx.RemoteIP())
-		})
-	}
-}
-
 func TestContext_RequestId(t *testing.T) {
 	t.Run("get header request id", func(t *testing.T) {
 		ctx, _ := CreateTestContext(httptest.NewRecorder())

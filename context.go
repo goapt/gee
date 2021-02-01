@@ -3,7 +3,6 @@ package gee
 import (
 	"bytes"
 	"io/ioutil"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -123,35 +122,4 @@ func (c *Context) RequestId() string {
 
 func (c *Context) SetLogInfo(key string, val interface{}) {
 	c.LogInfo[key] = val
-}
-
-func (c *Context) RemoteIP() string {
-	if ips := c.Request.Header.Get("X-Forwarded-For"); ips != "" {
-		ipSli := strings.Split(ips, ",")
-		for _, v := range ipSli {
-			v = strings.TrimSpace(v)
-			switch {
-			case v == "":
-				continue
-			case v == "unknow":
-				continue
-			case v == "127.0.0.1":
-				continue
-			case strings.HasPrefix(v, "10."):
-				continue
-			case strings.HasPrefix(v, "172"):
-				continue
-			case strings.HasPrefix(v, "192"):
-				continue
-			}
-
-			return v
-		}
-	} else if ip := c.Request.Header.Get("Client-Ip"); ip != "" {
-		return strings.TrimSpace(ip)
-	} else if ip := c.Request.Header.Get("Remote-Addr"); ip != "" {
-		return strings.TrimSpace(ip)
-	}
-
-	return "-1"
 }

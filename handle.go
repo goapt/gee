@@ -1,6 +1,7 @@
 package gee
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,10 @@ func Wrap(h gin.HandlerFunc) HandlerFunc {
 		h(c.Context)
 		return nil
 	}
+}
+
+func WrapH(h http.Handler) HandlerFunc {
+	return Wrap(gin.WrapH(h))
 }
 
 func getContext(c *gin.Context) *Context {
