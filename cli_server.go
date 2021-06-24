@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -39,6 +40,13 @@ func (h *CliServer) Run(cmds cli.Commands) {
 	app.Name = "app"
 	app.Version = VERSION
 	app.Copyright = "(c) Gee"
+	app.Compiled = time.Now()
+	app.Authors = []*cli.Author{
+		{
+			Name:  "fifsky",
+			Email: "fifsky@gmail.com",
+		},
+	}
 	app.Writer = os.Stdout
 	cli.ErrWriter = os.Stdout
 
