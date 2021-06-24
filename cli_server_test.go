@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func TestNewCliServer(t *testing.T) {
@@ -16,11 +16,11 @@ func TestNewCliServer(t *testing.T) {
 func TestCliServer_Run(t *testing.T) {
 	s := NewCliServer()
 	// cmd handler
-	var testCmd = cli.Command{
+	var testCmd = &cli.Command{
 		Name:  "test",
 		Usage: "test command eg: ./app test --id=7",
 		Flags: []cli.Flag{
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:  "id",
 				Usage: "user id",
 				Value: "7",
@@ -33,6 +33,6 @@ func TestCliServer_Run(t *testing.T) {
 	}
 
 	assert.NotPanics(t, func() {
-		s.Run([]cli.Command{testCmd})
+		s.Run([]*cli.Command{testCmd})
 	})
 }
