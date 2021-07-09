@@ -2,6 +2,7 @@ package gee
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -206,7 +207,7 @@ func TestContext_GetToken(t *testing.T) {
 		ctx, _ := CreateTestContext(httptest.NewRecorder())
 		ctx.Request, _ = http.NewRequest("POST", "/", nil)
 		ctx.Request.Header.Set("Access-Token", "c287ed17a01e")
-		assert.Equal(t, "c287ed17a01e", ctx.GetToken())
+		assert.Equal(t, "c287ed17a01e", ctx.Request.Header.Get("Access-Token"))
 	})
 }
 
@@ -233,6 +234,9 @@ func TestContext_Redirect(t *testing.T) {
 func TestContext_SetLogInfo(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := CreateTestContext(w)
-	ctx.SetLogInfo("foo", "bar")
-	assert.Equal(t, map[string]interface{}{"foo": "bar"}, ctx.LogInfo)
+	ctx.Request, _ = http.NewRequest("POST", "/", nil)
+	ctx2 := context.WithValue(context.Background(), "__info__", map[string]interface{}{"foo": "bar"})
+	ctx.Request = ctx.Request.WithContext(ctx2)
+
+	assert.Equal(t, map[string]interface{}{"foo": "bar"}, ctx.Request.Context().Value("__info__"))
 }

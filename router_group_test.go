@@ -49,7 +49,7 @@ func performRequestInGroup(t *testing.T, method string) {
 	assert.Equal(t, "/v1/login/", login.BasePath())
 
 	handler := func(c *Context) Response {
-		c.HttpStatus = http.StatusBadRequest
+		c.httpStatus = http.StatusBadRequest
 		return c.String("the method was %s and uri %s", c.Request.Method, c.Request.URL)
 	}
 

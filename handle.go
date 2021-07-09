@@ -25,8 +25,7 @@ func Handle(handler IHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := getContext(c)
 		if resp := handler.Handle(ctx); resp != nil {
-			ctx.Response = resp
-			ctx.Response.Render()
+			resp.Render()
 		}
 	}
 }
@@ -51,9 +50,8 @@ func getContext(c *gin.Context) *Context {
 	if ctx, ok := c.Get(contextKey); !ok {
 		ctx1 = &Context{
 			Context:    c,
-			LogInfo:    make(map[string]interface{}),
 			StartTime:  time.Now(),
-			RenderHook: make([]render.Hook, 0),
+			renderHook: make([]render.Hook, 0),
 		}
 		c.Set(contextKey, ctx1)
 	} else {

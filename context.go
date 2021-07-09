@@ -13,23 +13,21 @@ import (
 )
 
 func getHttpStatus(c *Context, status int) int {
-	if c.HttpStatus == 0 {
+	if c.httpStatus == 0 {
 		return status
 	}
-	return c.HttpStatus
+	return c.httpStatus
 }
 
 type Context struct {
 	*gin.Context
-	HttpStatus int
-	Response   Response
-	LogInfo    map[string]interface{}
+	httpStatus int
 	StartTime  time.Time
-	RenderHook []render.Hook
+	renderHook []render.Hook
 }
 
 func (c *Context) Render(r render.Render) {
-	r.Hooks(c.RenderHook)
+	r.Hooks(c.renderHook)
 	c.Context.Render(getHttpStatus(c, 200), r)
 }
 
@@ -37,11 +35,11 @@ func (c *Context) ShouldBindJSON(obj interface{}) error {
 	return c.ShouldBindWith(obj, binding.JSON)
 }
 
-// Read body data and restore request body data
 func (c *Context) ShouldBindBodyJSON(obj interface{}) error {
 	return c.ShouldBindBodyWith(obj, binding.JSON)
 }
 
+// GetBody read body data and restore request body data
 func (c *Context) GetBody() ([]byte, error) {
 	body, err := c.Context.GetRawData()
 	if err != nil {
@@ -52,7 +50,7 @@ func (c *Context) GetBody() ([]byte, error) {
 }
 
 func (c *Context) AddRenderHook(fn render.Hook) {
-	c.RenderHook = append(c.RenderHook, fn)
+	c.renderHook = append(c.renderHook, fn)
 }
 
 func (c *Context) ResponseWriter() *ResponseWriter {
@@ -74,7 +72,7 @@ func (c *Context) BindJSON(obj interface{}) error {
 }
 
 func (c *Context) Status(status int) {
-	c.HttpStatus = status
+	c.httpStatus = status
 }
 
 func (c *Context) JSON(data interface{}) Response {
@@ -106,10 +104,6 @@ func (c *Context) String(format string, values ...interface{}) Response {
 	}
 }
 
-func (c *Context) GetToken() string {
-	return c.Request.Header.Get("Access-Token")
-}
-
 func (c *Context) RequestId() string {
 	requestId := c.Request.Header.Get("X-Request-ID")
 	if requestId == "" {
@@ -118,8 +112,4 @@ func (c *Context) RequestId() string {
 	}
 
 	return requestId
-}
-
-func (c *Context) SetLogInfo(key string, val interface{}) {
-	c.LogInfo[key] = val
 }

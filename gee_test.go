@@ -52,3 +52,9 @@ func TestEngine_NoRoute(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "not found", w.Body.String())
 }
+
+func TestSetMode(t *testing.T) {
+	assert.NotPanics(t, func() {
+		SetMode(DebugMode)
+	})
+}

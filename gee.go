@@ -86,3 +86,16 @@ func CreateTestContext(w http.ResponseWriter) (*Context, *Engine) {
 		},
 	}
 }
+
+const (
+	// DebugMode indicates gin mode is debug.
+	DebugMode = gin.DebugMode
+	// ReleaseMode indicates gin mode is release.
+	ReleaseMode = gin.ReleaseMode
+	// TestMode indicates gin mode is test.
+	TestMode = gin.TestMode
+)
+
+func SetMode(value string) {
+	gin.SetMode(value)
+}
