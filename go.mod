@@ -10,7 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.7.0
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.2.0
+	github.com/google/uuid v1.3.0
 	github.com/ilibs/jsontime v1.0.4
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
