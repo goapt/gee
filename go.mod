@@ -3,7 +3,6 @@ module github.com/goapt/gee
 go 1.15
 
 require (
-	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-playground/locales v0.14.0
@@ -15,6 +14,6 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/stretchr/testify v1.7.1
 	github.com/ugorji/go v1.2.6 // indirect
-	github.com/urfave/cli/v2 v2.3.0
+	github.com/urfave/cli/v2 v2.4.0
 	google.golang.org/protobuf v1.27.1 // indirect
 )
