@@ -32,7 +32,7 @@ go install github.com/goapt/gee/cmd/protoc-gen-go-gee-errors
 go install github.com/goapt/gee/cmd/protoc-gen-go-gee-http
 ```
 
-genrate error
+generate error
 ```shell
 	protoc --proto_path=. --proto_path=../third_party \
 	--go_out=paths=source_relative:. \
