@@ -6,6 +6,7 @@ import (
 	"github.com/goapt/gee"
 	gerrors "github.com/goapt/gee/errors"
 	"github.com/goapt/gee/example/proto/demo/v1"
+	"github.com/goapt/gee/example/service"
 )
 
 func main() {
@@ -24,7 +25,7 @@ func main() {
 	router.Use(func(c *gee.Context) error {
 		c.Response.Before(func(w *gee.Response) {
 			if w.Body() != nil {
-				c.Writer.Header().Set("x-body-sign", "before")
+				c.Response.Header().Set("x-body-sign", "before")
 			}
 		})
 
@@ -32,15 +33,10 @@ func main() {
 		return nil
 	})
 
-	router.Use(func(c *gee.Context) error {
-		if c.Query("a") == "2" {
-			// return errors.New("a is middleware 2")
-		}
-		c.Next()
+	// register proto service
+	demo.RegisterBlogServiceHTTPServer(router, &service.Blog{})
 
-		return nil
-	})
-
+	// custom handler
 	router.GET("/test", func(c *gee.Context) error {
 		if c.Query("a") == "2" {
 			return demo.ErrorAccessForbidden("No access")

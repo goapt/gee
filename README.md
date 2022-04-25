@@ -24,5 +24,4 @@ router.GET("/", func(c *gee.Context) error {
 
 ```
 
-For example:
-https://github.com/goapt/gee-app
+For example: `/example`

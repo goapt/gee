@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package demo.v1;
+option go_package = ".;demo";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+service BlogService {
+    rpc Create (CreateArticleRequest) returns (CreateArticleResponse) {
+        option (google.api.http) = {
+            post: "/article/"
+            body: "*"
+        };
+    }
+    rpc UpdateArticle (UpdateArticleRequest) returns (UpdateArticleResponse) {
+        option (google.api.http) = {
+            put: "/article/"
+            body: "*"
+        };
+    }
+    rpc DeleteArticle (DeleteArticleRequest) returns (DeleteArticleResponse) {
+        option (google.api.http) = {
+            delete: "/article/"
+        };
+    }
+    rpc GetArticle (GetArticleRequest) returns (GetArticleResponse) {
+        option (google.api.http) = {
+            get: "/article/"
+        };
+    }
+    rpc ListArticle (ListArticleRequest) returns (ListArticleResponse) {
+        option (google.api.http) = {
+            get: "/article/list"
+        };
+    }
+}
+
+message Article {
+    int32 id = 1;
+    string title = 2;
+    string content = 3;
+    int64 like = 4;
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message CreateArticleRequest {
+    string title = 1;
+    string content = 2;
+}
+
+message CreateArticleResponse {
+    Article article = 1;
+}
+
+message UpdateArticleRequest {
+    int64 id = 1;
+    string title = 2;
+    string content = 3;
+}
+
+message UpdateArticleResponse {
+    Article article = 1;
+}
+
+message DeleteArticleRequest {
+    int64 id = 1;
+}
+message DeleteArticleResponse {
+}
+
+message GetArticleRequest {
+    int32 id = 1 [(validate.rules).int32.gt = 0];
+}
+
+message GetArticleResponse {
+    Article article = 1;
+}
+
+message ListArticleRequest {
+}
+
+message ListArticleResponse {
+    repeated Article results = 1;
+}
