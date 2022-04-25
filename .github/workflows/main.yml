@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.13, 1.14]
+        go-version: [1.16,1.174,1.18]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
