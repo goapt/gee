@@ -10,7 +10,7 @@ import (
 
 func TestDefault(t *testing.T) {
 	router := Default()
-	router.POST("/", func(c *Context) Response {
+	router.POST("/", func(c *Context) error {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	})
 	w := performRequest(router, "POST", "/")
@@ -22,17 +22,17 @@ func TestDefault(t *testing.T) {
 
 func TestRouterGroup(t *testing.T) {
 	router := Default()
-	router.Use(func(c *Context) Response {
+	router.Use(func(c *Context) error {
 		c.Set("root", 123)
 		return nil
 	})
 
 	api := router.Group("/api")
-	api.Use(func(c *Context) Response {
+	api.Use(func(c *Context) error {
 		c.Set("code", 10000)
 		return nil
 	})
-	api.POST("/user", func(c *Context) Response {
+	api.POST("/user", func(c *Context) error {
 		return c.JSON(H{"code": c.MustGet("code"), "root": c.MustGet("root"), "msg": "ok", "data": nil})
 	})
 	w := performRequest(router, "POST", "/api/user")
@@ -44,7 +44,7 @@ func TestRouterGroup(t *testing.T) {
 
 func TestEngine_NoRoute(t *testing.T) {
 	router := Default()
-	router.NoRoute(func(c *Context) Response {
+	router.NoRoute(func(c *Context) error {
 		return c.String("not found")
 	})
 	w := performRequest(router, "POST", "/notfound")

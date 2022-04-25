@@ -3,7 +3,6 @@ package gee
 import (
 	"bytes"
 	"io/ioutil"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -12,23 +11,17 @@ import (
 	"github.com/goapt/gee/render"
 )
 
-func getHttpStatus(c *Context, status int) int {
+type Context struct {
+	*gin.Context
+	httpStatus int
+	Response   *Response
+}
+
+func (c *Context) getHttpStatus(status int) int {
 	if c.httpStatus == 0 {
 		return status
 	}
 	return c.httpStatus
-}
-
-type Context struct {
-	*gin.Context
-	httpStatus int
-	StartTime  time.Time
-	renderHook []render.Hook
-}
-
-func (c *Context) Render(r render.Render) {
-	r.Hooks(c.renderHook)
-	c.Context.Render(getHttpStatus(c, 200), r)
 }
 
 func (c *Context) ShouldBindJSON(obj interface{}) error {
@@ -49,24 +42,6 @@ func (c *Context) GetBody() ([]byte, error) {
 	return body, nil
 }
 
-func (c *Context) AddRenderHook(fn render.Hook) {
-	c.renderHook = append(c.renderHook, fn)
-}
-
-func (c *Context) ResponseWriter() *ResponseWriter {
-	if resp, ok := c.Writer.(*ResponseWriter); ok {
-		return resp
-	}
-	return nil
-}
-
-func (c *Context) ResponseBody() []byte {
-	if resp := c.ResponseWriter(); resp != nil {
-		return resp.Body()
-	}
-	return nil
-}
-
 func (c *Context) BindJSON(obj interface{}) error {
 	return c.MustBindWith(obj, binding.JSON)
 }
@@ -75,33 +50,29 @@ func (c *Context) Status(status int) {
 	c.httpStatus = status
 }
 
-func (c *Context) JSON(data interface{}) Response {
-	return &JSONResponse{
-		Context: c,
-		Data:    data,
-	}
+func (c *Context) JSON(data interface{}) error {
+	c.Context.Render(c.getHttpStatus(200), &render.JSON{Data: data})
+	return nil
 }
 
-func (c *Context) XML(data interface{}) Response {
-	return &XMLResponse{
-		Context: c,
-		Data:    data,
-	}
+func (c *Context) XML(data interface{}) error {
+	c.Context.XML(c.getHttpStatus(200), data)
+	return nil
 }
 
-func (c *Context) Redirect(location string) Response {
-	return &RedirectResponse{
-		Context:  c,
-		Location: location,
-	}
+func (c *Context) YAML(data interface{}) error {
+	c.Context.YAML(c.getHttpStatus(200), data)
+	return nil
 }
 
-func (c *Context) String(format string, values ...interface{}) Response {
-	return &StringResponse{
-		Context: c,
-		Format:  format,
-		Data:    values,
-	}
+func (c *Context) Redirect(location string) error {
+	c.Context.Redirect(c.getHttpStatus(302), location)
+	return nil
+}
+
+func (c *Context) String(format string, values ...interface{}) error {
+	c.Context.String(c.getHttpStatus(200), format, values...)
+	return nil
 }
 
 func (c *Context) RequestId() string {

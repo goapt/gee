@@ -1,6 +1,6 @@
 module github.com/goapt/gee
 
-go 1.15
+go 1.16
 
 require (
 	github.com/gin-contrib/pprof v1.3.0
@@ -14,6 +14,7 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/stretchr/testify v1.7.1
 	github.com/ugorji/go v1.2.6 // indirect
-	github.com/urfave/cli/v2 v2.4.0
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731
+	google.golang.org/grpc v1.46.0
+	google.golang.org/protobuf v1.28.0
 )

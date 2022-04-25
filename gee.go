@@ -39,12 +39,12 @@ func New() *Engine {
 	}
 }
 
-func (e *Engine) Use(middleware ...HandlerFunc) IRoutes {
+func (e *Engine) Use(middleware ...Handler) IRoutes {
 	e.Engine.Use(e.RouterGroup.warp(middleware)...)
 	return e
 }
 
-func (e *Engine) NoRoute(handlers ...HandlerFunc) {
+func (e *Engine) NoRoute(handlers ...Handler) {
 	e.Engine.NoRoute(e.RouterGroup.warp(handlers)...)
 }
 

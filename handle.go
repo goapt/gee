@@ -1,65 +1,56 @@
 package gee
 
 import (
+	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/goapt/gee/render"
 )
 
-type IHandler interface {
-	Handle(c *Context) Response
+type Handler = func(c *Context) error
+
+var ErrorHandler = func(c *Context, err error) error {
+	c.Abort()
+	return c.String(err.Error())
 }
 
-type HandlerFunc func(c *Context) Response
-
-func (h HandlerFunc) Handle(c *Context) Response {
-	return h(c)
-}
-
-const contextKey = "__context"
-
-func Handle(handler IHandler) gin.HandlerFunc {
+func HandlerFunc(h Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := getContext(c)
-		if resp := handler.Handle(ctx); resp != nil {
-			resp.Render()
+		if err := h(ctx); err != nil {
+			if err := ErrorHandler(ctx, err); err != nil {
+				ctx.Status(http.StatusInternalServerError)
+				log.Printf("[ERROR] %s\n", err)
+			}
 		}
 	}
 }
 
-func HandleFunc(handler HandlerFunc) gin.HandlerFunc {
-	return Handle(handler)
-}
-
-func Wrap(h gin.HandlerFunc) HandlerFunc {
-	return func(c *Context) Response {
+func Wrap(h gin.HandlerFunc) Handler {
+	return func(c *Context) error {
 		h(c.Context)
 		return nil
 	}
 }
 
-func WrapH(h http.Handler) HandlerFunc {
+func WrapH(h http.Handler) Handler {
 	return Wrap(gin.WrapH(h))
 }
+
+const contextKey = "__context"
 
 func getContext(c *gin.Context) *Context {
 	var ctx1 *Context
 	if ctx, ok := c.Get(contextKey); !ok {
+		resp := newResponseWriter(c.Writer)
+		c.Writer = resp
 		ctx1 = &Context{
-			Context:    c,
-			StartTime:  time.Now(),
-			renderHook: make([]render.Hook, 0),
+			Context:  c,
+			Response: resp,
 		}
 		c.Set(contextKey, ctx1)
 	} else {
 		ctx1 = ctx.(*Context)
 	}
-
-	// rewriter gin Writer
-	c.Writer = newResponseWriter(c.Writer)
-
 	return ctx1
 }

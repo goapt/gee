@@ -26,7 +26,7 @@ func performRequest(r http.Handler, method, path string, headers ...header) *htt
 
 func TestHandle(t *testing.T) {
 	r := New()
-	var testHander HandlerFunc = func(c *Context) Response {
+	var testHander = func(c *Context) error {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
 	r.POST("/", testHander)
@@ -52,7 +52,7 @@ func TestHandle_Wrap(t *testing.T) {
 
 func TestHandleFunc(t *testing.T) {
 	r := New()
-	var testHander HandlerFunc = func(c *Context) Response {
+	var testHander = func(c *Context) error {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
 	r.POST("/", testHander)

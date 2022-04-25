@@ -20,7 +20,7 @@ func TestRouterGroupBasicHandle(t *testing.T) {
 
 func TestRouterGroup_Any(t *testing.T) {
 	r := New()
-	var testHander HandlerFunc = func(c *Context) Response {
+	var testHander = func(c *Context) error {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
 	r.Any("/", testHander)
@@ -31,7 +31,7 @@ func TestRouterGroup_Any(t *testing.T) {
 
 func TestRouterGroup_Handle(t *testing.T) {
 	r := New()
-	var testHander HandlerFunc = func(c *Context) Response {
+	var testHander = func(c *Context) error {
 		return c.JSON(gin.H{"code": 10000, "msg": "ok", "data": nil})
 	}
 	r.Handle(http.MethodPost, "/", testHander)
@@ -42,13 +42,13 @@ func TestRouterGroup_Handle(t *testing.T) {
 
 func performRequestInGroup(t *testing.T, method string) {
 	router := New()
-	v1 := router.Group("v1", func(c *Context) Response { return nil })
+	v1 := router.Group("v1", func(c *Context) error { return nil })
 	assert.Equal(t, "/v1", v1.BasePath())
 
-	login := v1.Group("/login/", func(c *Context) Response { return nil }, func(c *Context) Response { return nil })
+	login := v1.Group("/login/", func(c *Context) error { return nil }, func(c *Context) error { return nil })
 	assert.Equal(t, "/v1/login/", login.BasePath())
 
-	handler := func(c *Context) Response {
+	handler := func(c *Context) error {
 		c.httpStatus = http.StatusBadRequest
 		return c.String("the method was %s and uri %s", c.Request.Method, c.Request.URL)
 	}

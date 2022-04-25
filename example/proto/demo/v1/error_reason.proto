@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package demo.v1;
+import "errors/errors.proto";
+
+option go_package = ".;demo";
+
+enum ErrorReason {
+  option (errors.default_code) = 500;
+
+  InvalidParameter = 0 [(errors.code) = 400];
+  AccessForbidden = 1 [(errors.code) = 403];
+  Unauthenticated = 2 [(errors.code) = 401];
+  RateLimited = 3 [(errors.code) = 429];
+  SystemError = 4 [(errors.code) = 500];
+  NotFound = 5 [(errors.code) = 400];
+  Forbidden = 6 [(errors.code) = 403];
+}

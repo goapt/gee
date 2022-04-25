@@ -18,7 +18,7 @@ import "github.com/goapt/gee"
 
 router := gee.Default()
 
-router.GET("/", func(c *gee.Context) gee.Response {
+router.GET("/", func(c *gee.Context) error {
     return c.String("hello")
 })
 
@@ -26,4 +26,3 @@ router.GET("/", func(c *gee.Context) gee.Response {
 
 For example:
 https://github.com/goapt/gee-app
-

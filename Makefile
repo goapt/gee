@@ -33,14 +33,6 @@ fmt-check:
 vet:
 	$(GO) vet $(VETPACKAGES)
 
-.PHONY: deploy
-deploy:
-	skaffold run -n pay --tail
-
-.PHONY: envdrone
-envdrone:
-	@drone orgsecret update template env_conf @.env
-
-.PHONY: mysql-test
-mysql-test:
-	@docker-compose up -d mysql
+.PHONY: lint
+lint:
+	golangci-lint run

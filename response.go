@@ -1,50 +1,45 @@
 package gee
 
 import (
-	"github.com/goapt/gee/render"
+	"bytes"
+
+	"github.com/gin-gonic/gin"
 )
 
-type Response interface {
-	Render()
+type Response struct {
+	gin.ResponseWriter
+	body   *bytes.Buffer
+	before func(w *Response)
 }
 
-type RenderFunc func()
-
-func (e RenderFunc) Render() { e() }
-
-type JSONResponse struct {
-	Context *Context    `json:"-"`
-	Data    interface{} `json:"data"`
+func newResponseWriter(w gin.ResponseWriter) *Response {
+	return &Response{
+		ResponseWriter: w,
+		body:           &bytes.Buffer{},
+	}
 }
 
-func (c *JSONResponse) Render() {
-	c.Context.Render(&render.JSON{Data: c.Data})
+// Before is a function which will be called before the response is written to the client.
+func (w *Response) Before(fn func(w *Response)) {
+	w.before = fn
 }
 
-type XMLResponse struct {
-	Context *Context    `json:"-"`
-	Data    interface{} `json:"data"`
+func (w *Response) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	if w.before != nil {
+		w.before(w)
+	}
+	return w.ResponseWriter.Write(b)
 }
 
-func (c *XMLResponse) Render() {
-	c.Context.Render(&render.XML{Data: c.Data})
+func (w *Response) Body() []byte {
+	return w.body.Bytes()
 }
 
-type RedirectResponse struct {
-	Context  *Context `json:"-"`
-	Location string
-}
-
-func (c *RedirectResponse) Render() {
-	c.Context.Context.Redirect(getHttpStatus(c.Context, 302), c.Location)
-}
-
-type StringResponse struct {
-	Context *Context `json:"-"`
-	Format  string
-	Data    []interface{}
-}
-
-func (c *StringResponse) Render() {
-	c.Context.Render(&render.String{Format: c.Format, Data: c.Data})
+func (w *Response) WriteString(s string) (int, error) {
+	w.body.WriteString(s)
+	if w.before != nil {
+		w.before(w)
+	}
+	return w.ResponseWriter.WriteString(s)
 }

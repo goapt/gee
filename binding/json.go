@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin/binding"
-
-	"github.com/goapt/gee/internal/json"
+	"github.com/goapt/gee/encoding"
+	"github.com/goapt/gee/encoding/json"
 )
 
 type JsonBindingError struct {
@@ -37,11 +37,11 @@ func (jsonBinding) BindBody(body []byte, obj interface{}) error {
 }
 
 func decodeJSON(r io.Reader, obj interface{}) error {
-	decoder := json.NewDecoder(r)
-	if binding.EnableDecoderUseNumber {
-		decoder.UseNumber()
+	body, err := io.ReadAll(r)
+	if err != nil {
+		return err
 	}
-	if err := decoder.Decode(obj); err != nil {
+	if err := encoding.GetCodec(json.Name).Unmarshal(body, obj); err != nil {
 		return &JsonBindingError{
 			Err: err,
 		}

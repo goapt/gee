@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 	"time"
 
@@ -88,28 +87,13 @@ func TestContext_GetBody(t *testing.T) {
 }
 
 func TestContext_ResponseWriter(t *testing.T) {
-	ctx, _ := CreateTestContext(httptest.NewRecorder())
-	resp := ctx.JSON(H{
-		"foo": "bar",
-	})
-	resp.Render()
-	assert.Equal(t, `{"foo":"bar"}`, string(ctx.ResponseBody()))
-	assert.NotNil(t, ctx.ResponseWriter())
-}
-
-func TestContext_AddRenderHook(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := CreateTestContext(w)
-	ctx.AddRenderHook(func(body []byte) {
-		ctx.Writer.Header().Set("X-Response-Len", strconv.Itoa(len(body)))
-	})
-
-	resp := ctx.JSON(H{
+	err := ctx.JSON(H{
 		"foo": "bar",
 	})
-	resp.Render()
-	assert.Equal(t, `{"foo":"bar"}`, string(ctx.ResponseBody()))
-	assert.Equal(t, strconv.Itoa(len(ctx.ResponseBody())), w.Header().Get("X-Response-Len"))
+	assert.NoError(t, err)
+	assert.Equal(t, `{"foo":"bar"}`, w.Body.String())
 }
 
 func TestContext_JSON(t *testing.T) {
@@ -136,8 +120,8 @@ func TestContext_JSON(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctx, _ := CreateTestContext(w)
 
-			resp := ctx.JSON(tt.args)
-			resp.Render()
+			err := ctx.JSON(tt.args)
+			assert.NoError(t, err)
 			assert.Equal(t, http.StatusOK, w.Code)
 			assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
 
@@ -162,8 +146,8 @@ func TestContext_String(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctx, _ := CreateTestContext(w)
 
-			resp := ctx.String(tt.args)
-			resp.Render()
+			err := ctx.String(tt.args)
+			assert.NoError(t, err)
 			assert.Equal(t, http.StatusOK, w.Code)
 			assert.Equal(t, "text/plain; charset=utf-8", w.Header().Get("Content-Type"))
 
@@ -178,10 +162,10 @@ func TestContext_XML(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := CreateTestContext(w)
 
-	resp := ctx.XML(H{
+	err := ctx.XML(H{
 		"foo": "bar",
 	})
-	resp.Render()
+	assert.NoError(t, err)
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "<map><foo>bar</foo></map>", w.Body.String())
 	assert.Equal(t, "application/xml; charset=utf-8", w.Header().Get("Content-Type"))
@@ -216,18 +200,18 @@ func TestContext_Status(t *testing.T) {
 	ctx, _ := CreateTestContext(w)
 	ctx.Status(403)
 
-	resp := ctx.String("foo")
-	resp.Render()
+	err := ctx.String("foo")
+	assert.NoError(t, err)
 	assert.Equal(t, http.StatusForbidden, w.Code)
 }
 
 func TestContext_Redirect(t *testing.T) {
-	w := httptest.NewRecorder()
-	ctx, _ := CreateTestContext(w)
-	resp := ctx.Redirect("/new/location")
 	assert.PanicsWithValue(t, "Cannot redirect with status code 200", func() {
+		w := httptest.NewRecorder()
+		ctx, _ := CreateTestContext(w)
 		ctx.Status(http.StatusOK)
-		resp.Render()
+		err := ctx.Redirect("/new/location")
+		assert.NoError(t, err)
 	})
 }
 
@@ -235,7 +219,7 @@ func TestContext_SetLogInfo(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := CreateTestContext(w)
 	ctx.Request, _ = http.NewRequest("POST", "/", nil)
-	ctx2 := context.WithValue(context.Background(), "__info__", map[string]interface{}{"foo": "bar"})
+	ctx2 := context.WithValue(context.Background(), "__info__", map[string]interface{}{"foo": "bar"}) // nolint
 	ctx.Request = ctx.Request.WithContext(ctx2)
 
 	assert.Equal(t, map[string]interface{}{"foo": "bar"}, ctx.Request.Context().Value("__info__"))

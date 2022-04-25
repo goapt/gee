@@ -1,23 +1,13 @@
 package render
 
-import "net/http"
+import (
+	"net/http"
 
-type Hook func(body []byte)
-
-// Render interface is to be implemented by JSON, XML, HTML, YAML and so on.
-type Render interface {
-	// Render writes data with custom ContentType.
-	Render(http.ResponseWriter) error
-	// WriteContentType writes custom ContentType.
-	WriteContentType(w http.ResponseWriter)
-	// Hooks set rendner hooks
-	Hooks(hooks []Hook)
-}
+	"github.com/gin-gonic/gin/render"
+)
 
 var (
-	_ Render = (*JSON)(nil)
-	_ Render = (*XML)(nil)
-	_ Render = (*String)(nil)
+	_ render.Render = (*JSON)(nil)
 )
 
 func writeContentType(w http.ResponseWriter, value []string) {
