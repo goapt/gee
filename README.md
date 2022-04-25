@@ -24,4 +24,28 @@ router.GET("/", func(c *gee.Context) error {
 
 ```
 
+
+## Proto API tools
+
+```
+go install github.com/goapt/gee/cmd/protoc-gen-go-gee-errors
+go install github.com/goapt/gee/cmd/protoc-gen-go-gee-http
+```
+
+genrate error
+```shell
+	protoc --proto_path=. --proto_path=../third_party \
+	--go_out=paths=source_relative:. \
+	--go-gee-errors_out=paths=source_relative:. \
+	./proto/demo/v1/error_reason.proto
+```
+
+generate http
+```shell
+    protoc --proto_path=. --proto_path=../third_party \
+    --go_out=paths=source_relative:. \
+    --go-gee-http_out=paths=source_relative:. \
+    ./proto/demo/v1/demo.proto
+```
+
 For example: `/example`
