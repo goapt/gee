@@ -47,7 +47,7 @@ type Server struct {
 
 func New(opts ...Option) *Server {
 	srv := &Server{
-		stopTimeout: 3 * time.Second,
+		stopTimeout: 1 * time.Second,
 	}
 
 	for _, o := range opts {
