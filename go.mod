@@ -13,7 +13,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/prometheus/client_golang v1.12.1
 	github.com/stretchr/testify v1.7.1
-	github.com/tidwall/gjson v1.12.1
+	github.com/tidwall/gjson v1.14.1
 	github.com/ugorji/go v1.2.6 // indirect
 	go.opentelemetry.io/otel v1.6.3
 	go.opentelemetry.io/otel/sdk v1.6.3
