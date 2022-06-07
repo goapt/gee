@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/ilibs/jsontime v1.0.4
 	github.com/prometheus/client_golang v1.12.2
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	github.com/tidwall/gjson v1.14.1
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
