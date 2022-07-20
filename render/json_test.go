@@ -26,6 +26,6 @@ func TestRenderJSON(t *testing.T) {
 	err := (JSON{Data: data}).Render(w)
 
 	assert.NoError(t, err)
-	assert.Equal(t, `{"Id":1,"Name":"test","Created":"2020-01-01 19:11:11"}`, w.Body.String())
+	assert.Equal(t, `{"Id":1,"Name":"test","Created":"2020-01-01T11:11:11Z"}`, w.Body.String())
 	assert.Equal(t, "application/json; charset=utf-8", w.Header().Get("Content-Type"))
 }

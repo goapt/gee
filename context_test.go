@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -23,17 +22,17 @@ func TestContext_ShouldBindJSON(t *testing.T) {
 	ctx.Request, _ = http.NewRequest("POST", "/", bytes.NewBufferString(body))
 
 	p := &struct {
-		Page    int       `json:"page"`
-		Num     int       `json:"num"`
-		Search  string    `json:"search"`
-		Created time.Time `json:"created" time_format:"2006-01-02 15:04:05"`
+		Page    int    `json:"page"`
+		Num     int    `json:"num"`
+		Search  string `json:"search"`
+		Created string `json:"created"`
 	}{}
 
 	err := ctx.ShouldBindJSON(p)
 	assert.NoError(t, err)
 	assert.Equal(t, p.Page, 1)
 	assert.Equal(t, p.Num, 10)
-	assert.Equal(t, p.Created.Format("2006-01-02 15:04:05"), "2020-09-17 12:34:23")
+	assert.Equal(t, p.Created, "2020-09-17 12:34:23")
 	assert.Equal(t, p.Search, "你好")
 }
 
@@ -59,17 +58,17 @@ func TestContext_ShouldBindBodyJSON(t *testing.T) {
 	body := `{"page":1,"num":10,"search":"你好","created":"2020-09-17 12:34:23"}`
 	ctx.Request, _ = http.NewRequest("POST", "/", bytes.NewBufferString(body))
 	p := &struct {
-		Page    int       `json:"page"`
-		Num     int       `json:"num"`
-		Search  string    `json:"search"`
-		Created time.Time `json:"created" time_format:"2006-01-02 15:04:05"`
+		Page    int    `json:"page"`
+		Num     int    `json:"num"`
+		Search  string `json:"search"`
+		Created string `json:"created"`
 	}{}
 	err := ctx.ShouldBindBodyJSON(p)
 	assert.NoError(t, err)
 	assert.Equal(t, p.Page, 1)
 	assert.Equal(t, p.Num, 10)
 	assert.Equal(t, p.Search, "你好")
-	assert.Equal(t, p.Created.Format("2006-01-02 15:04:05"), "2020-09-17 12:34:23")
+	assert.Equal(t, p.Created, "2020-09-17 12:34:23")
 	body2, _ := ctx.Get(gin.BodyBytesKey)
 	assert.Equal(t, string(body2.([]byte)), body)
 }
@@ -98,9 +97,9 @@ func TestContext_ResponseWriter(t *testing.T) {
 
 func TestContext_JSON(t *testing.T) {
 	type data struct {
-		Id      int       `json:"id"`
-		Name    string    `json:"name"`
-		Created time.Time `json:"created" time_format:"2006-01-02 15:04:05"`
+		Id      int    `json:"id"`
+		Name    string `json:"name"`
+		Created string `json:"created"`
 	}
 
 	tests := []struct {
@@ -111,7 +110,7 @@ func TestContext_JSON(t *testing.T) {
 		{name: "biz error", args: &data{
 			Id:      1,
 			Name:    "test",
-			Created: time.Date(2019, 11, 21, 07, 49, 0, 0, time.Local),
+			Created: "2019-11-21 07:49:00",
 		}, want: `{"id":1,"name":"test","created":"2019-11-21 07:49:00"}`},
 	}
 

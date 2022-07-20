@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/goapt/gee/binding"
 	"github.com/goapt/gee/render"
@@ -22,6 +23,26 @@ func (c *Context) getHttpStatus(status int) int {
 		return status
 	}
 	return c.httpStatus
+}
+
+func (c *Context) ShouldBindUri(obj interface{}) error {
+	if _, ok := obj.(proto.Message); ok {
+		m := make(map[string][]string)
+		for _, v := range c.Params {
+			m[v.Key] = []string{v.Value}
+		}
+		return binding.Uri.BindUri(m, obj)
+	} else {
+		return c.Context.ShouldBindUri(obj)
+	}
+}
+
+func (c *Context) ShouldBindQuery(obj interface{}) error {
+	if _, ok := obj.(proto.Message); ok {
+		return c.ShouldBindWith(obj, binding.Query)
+	} else {
+		return c.Context.ShouldBindQuery(obj)
+	}
 }
 
 func (c *Context) ShouldBindJSON(obj interface{}) error {
