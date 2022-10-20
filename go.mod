@@ -15,7 +15,7 @@ require (
 	github.com/tidwall/gjson v1.14.3
 	go.opentelemetry.io/otel v1.11.1
 	go.opentelemetry.io/otel/exporters/jaeger v1.11.0
-	go.opentelemetry.io/otel/sdk v1.11.0
+	go.opentelemetry.io/otel/sdk v1.11.1
 	go.opentelemetry.io/otel/trace v1.11.1
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f
