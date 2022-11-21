@@ -19,7 +19,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.11.1
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f
-	google.golang.org/grpc v1.50.1
+	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -48,8 +48,8 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
 	golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
