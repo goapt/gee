@@ -2,7 +2,7 @@ package gee
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
@@ -17,14 +17,14 @@ func TestDebugRoute(t *testing.T) {
 	{
 		w := performRequest(router, "GET", "/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
 		w := performRequest(router, "GET", "/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		fmt.Println(string(body))
 		assert.Contains(t, string(body), "go_info")
 	}
@@ -40,14 +40,14 @@ func TestDebugRouteWithPath(t *testing.T) {
 	{
 		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
 		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		fmt.Println(string(body))
 		assert.Contains(t, string(body), "go_info")
 	}
@@ -64,14 +64,14 @@ func TestDebugWithRouteGroup(t *testing.T) {
 	{
 		w := performRequest(router, "GET", "/example/debug/pprof/?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		assert.Contains(t, string(body), "<body>")
 	}
 
 	{
 		w := performRequest(router, "GET", "/example/debug/metrics?debug_token=058759a8c4d920576348854616a58f3f")
 		assert.Equal(t, http.StatusOK, w.Code)
-		body, _ := ioutil.ReadAll(w.Body)
+		body, _ := io.ReadAll(w.Body)
 		fmt.Println(string(body))
 		assert.Contains(t, string(body), "go_info")
 	}

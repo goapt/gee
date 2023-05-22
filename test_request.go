@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -110,12 +109,12 @@ func (r *TestRequest) doRequest(method string, contentType string, body io.Reade
 	req := r.Request.Clone(context.Background())
 	req.Method = method
 	if body != nil {
-		bb, err = ioutil.ReadAll(body)
+		bb, err = io.ReadAll(body)
 		if err != nil {
 			return nil, err
 		}
 
-		req.Body = ioutil.NopCloser(bytes.NewReader(bb))
+		req.Body = io.NopCloser(bytes.NewReader(bb))
 	}
 
 	if method == http.MethodPost {
