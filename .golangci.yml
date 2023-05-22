@@ -8,3 +8,4 @@ run:
   skip-dirs:
     - testdata
     - storage
+    - third_party

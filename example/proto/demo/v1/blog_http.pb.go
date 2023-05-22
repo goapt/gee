@@ -37,7 +37,7 @@ func (r *BlogService) RegisterService() {
 	r.router.GET("/article/list", append(r.middlewares, r.ListArticle)...)
 }
 
-func (r *BlogService) Validate(in interface{}) error {
+func (r *BlogService) Validate(in any) error {
 	if v, ok := in.(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return err
@@ -152,7 +152,7 @@ type BlogServiceHTTPClientImpl struct {
 	cc *gee.Client
 }
 
-func (c *BlogServiceHTTPClientImpl) Validate(in interface{}) error {
+func (c *BlogServiceHTTPClientImpl) Validate(in any) error {
 	if v, ok := in.(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return err

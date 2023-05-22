@@ -17,7 +17,7 @@ func (uriBinding) Name() string {
 	return "query"
 }
 
-func (uriBinding) BindUri(values url.Values, obj interface{}) error {
+func (uriBinding) BindUri(values url.Values, obj any) error {
 	return encoding.GetCodec(form.Name).Unmarshal([]byte(values.Encode()), obj)
 }
 

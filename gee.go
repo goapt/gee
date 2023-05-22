@@ -53,7 +53,7 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // H is a shortcut for map[string]interface{}
-type H map[string]interface{}
+type H map[string]any
 
 // MarshalXML allows type H to be used with xml.Marshal.
 func (h H) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

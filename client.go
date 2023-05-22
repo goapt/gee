@@ -95,7 +95,7 @@ func NewClient(client *http.Client, endpoint string, opts ...ClientOption) *Clie
 	}
 }
 
-func (c *Client) Invoke(ctx context.Context, method, path string, args interface{}, reply interface{}) error {
+func (c *Client) Invoke(ctx context.Context, method, path string, args any, reply any) error {
 	var (
 		body io.Reader
 	)

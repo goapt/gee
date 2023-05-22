@@ -19,7 +19,7 @@ func IsInvalidParameter(err error) bool {
 	return e.Reason == ErrorReason_InvalidParameter.String() && e.Code == 400
 }
 
-func ErrorInvalidParameter(format string, args ...interface{}) *errors.Error {
+func ErrorInvalidParameter(format string, args ...any) *errors.Error {
 	return errors.New(400, ErrorReason_InvalidParameter.String(), fmt.Sprintf(format, args...))
 }
 
@@ -31,7 +31,7 @@ func IsAccessForbidden(err error) bool {
 	return e.Reason == ErrorReason_AccessForbidden.String() && e.Code == 403
 }
 
-func ErrorAccessForbidden(format string, args ...interface{}) *errors.Error {
+func ErrorAccessForbidden(format string, args ...any) *errors.Error {
 	return errors.New(403, ErrorReason_AccessForbidden.String(), fmt.Sprintf(format, args...))
 }
 
@@ -43,7 +43,7 @@ func IsUnauthenticated(err error) bool {
 	return e.Reason == ErrorReason_Unauthenticated.String() && e.Code == 401
 }
 
-func ErrorUnauthenticated(format string, args ...interface{}) *errors.Error {
+func ErrorUnauthenticated(format string, args ...any) *errors.Error {
 	return errors.New(401, ErrorReason_Unauthenticated.String(), fmt.Sprintf(format, args...))
 }
 
@@ -55,7 +55,7 @@ func IsRateLimited(err error) bool {
 	return e.Reason == ErrorReason_RateLimited.String() && e.Code == 429
 }
 
-func ErrorRateLimited(format string, args ...interface{}) *errors.Error {
+func ErrorRateLimited(format string, args ...any) *errors.Error {
 	return errors.New(429, ErrorReason_RateLimited.String(), fmt.Sprintf(format, args...))
 }
 
@@ -67,7 +67,7 @@ func IsSystemError(err error) bool {
 	return e.Reason == ErrorReason_SystemError.String() && e.Code == 500
 }
 
-func ErrorSystemError(format string, args ...interface{}) *errors.Error {
+func ErrorSystemError(format string, args ...any) *errors.Error {
 	return errors.New(500, ErrorReason_SystemError.String(), fmt.Sprintf(format, args...))
 }
 
@@ -79,7 +79,7 @@ func IsNotFound(err error) bool {
 	return e.Reason == ErrorReason_NotFound.String() && e.Code == 400
 }
 
-func ErrorNotFound(format string, args ...interface{}) *errors.Error {
+func ErrorNotFound(format string, args ...any) *errors.Error {
 	return errors.New(400, ErrorReason_NotFound.String(), fmt.Sprintf(format, args...))
 }
 
@@ -91,6 +91,6 @@ func IsForbidden(err error) bool {
 	return e.Reason == ErrorReason_Forbidden.String() && e.Code == 403
 }
 
-func ErrorForbidden(format string, args ...interface{}) *errors.Error {
+func ErrorForbidden(format string, args ...any) *errors.Error {
 	return errors.New(403, ErrorReason_Forbidden.String(), fmt.Sprintf(format, args...))
 }

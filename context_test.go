@@ -3,7 +3,7 @@ package gee
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -81,7 +81,7 @@ func TestContext_GetBody(t *testing.T) {
 	body2, err := ctx.GetBody()
 	assert.NoError(t, err)
 	assert.Equal(t, string(body2), body)
-	body3, _ := ioutil.ReadAll(ctx.Request.Body)
+	body3, _ := io.ReadAll(ctx.Request.Body)
 	assert.Equal(t, string(body3), body)
 }
 
@@ -104,7 +104,7 @@ func TestContext_JSON(t *testing.T) {
 
 	tests := []struct {
 		name string
-		args interface{}
+		args any
 		want string
 	}{
 		{name: "biz error", args: &data{
@@ -218,8 +218,8 @@ func TestContext_SetLogInfo(t *testing.T) {
 	w := httptest.NewRecorder()
 	ctx, _ := CreateTestContext(w)
 	ctx.Request, _ = http.NewRequest("POST", "/", nil)
-	ctx2 := context.WithValue(context.Background(), "__info__", map[string]interface{}{"foo": "bar"}) // nolint
+	ctx2 := context.WithValue(context.Background(), "__info__", map[string]any{"foo": "bar"}) // nolint
 	ctx.Request = ctx.Request.WithContext(ctx2)
 
-	assert.Equal(t, map[string]interface{}{"foo": "bar"}, ctx.Request.Context().Value("__info__"))
+	assert.Equal(t, map[string]any{"foo": "bar"}, ctx.Request.Context().Value("__info__"))
 }

@@ -461,7 +461,7 @@ func file_complex_proto_rawDescGZIP() []byte {
 
 var file_complex_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_complex_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_complex_proto_goTypes = []interface{}{
+var file_complex_proto_goTypes = []any{
 	(Sex)(0),                       // 0: testproto.sex
 	(*Complex)(nil),                // 1: testproto.Complex
 	(*Simple)(nil),                 // 2: testproto.Simple
@@ -508,7 +508,7 @@ func file_complex_proto_init() {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_complex_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_complex_proto_msgTypes[0].Exporter = func(v any, i int) any {
 			switch v := v.(*Complex); i {
 			case 0:
 				return &v.state
@@ -520,7 +520,7 @@ func file_complex_proto_init() {
 				return nil
 			}
 		}
-		file_complex_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_complex_proto_msgTypes[1].Exporter = func(v any, i int) any {
 			switch v := v.(*Simple); i {
 			case 0:
 				return &v.state

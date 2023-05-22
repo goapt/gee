@@ -28,7 +28,7 @@ type DefaultValidator struct {
 
 var _ binding.StructValidator = (*DefaultValidator)(nil)
 
-func (v *DefaultValidator) ValidateStruct(obj interface{}) error {
+func (v *DefaultValidator) ValidateStruct(obj any) error {
 
 	if kindOfData(obj) == reflect.Struct {
 
@@ -46,7 +46,7 @@ func (v *DefaultValidator) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
-func (v *DefaultValidator) Engine() interface{} {
+func (v *DefaultValidator) Engine() any {
 	v.lazyinit()
 	return v.validate
 }
@@ -84,7 +84,7 @@ func (v *DefaultValidator) translateOverride() {
 	})
 }
 
-func kindOfData(data interface{}) reflect.Kind {
+func kindOfData(data any) reflect.Kind {
 	value := reflect.ValueOf(data)
 	valueType := value.Kind()
 

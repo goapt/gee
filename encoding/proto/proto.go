@@ -18,11 +18,11 @@ func init() {
 // codec is a Codec implementation with protobuf. It is the default codec for Transport.
 type codec struct{}
 
-func (codec) Marshal(v interface{}) ([]byte, error) {
+func (codec) Marshal(v any) ([]byte, error) {
 	return proto.Marshal(v.(proto.Message))
 }
 
-func (codec) Unmarshal(data []byte, v interface{}) error {
+func (codec) Unmarshal(data []byte, v any) error {
 	return proto.Unmarshal(data, v.(proto.Message))
 }
 

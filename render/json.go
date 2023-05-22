@@ -8,7 +8,7 @@ import (
 )
 
 type JSON struct {
-	Data interface{}
+	Data any
 }
 
 var jsonContentType = []string{"application/json; charset=utf-8"}
@@ -17,7 +17,7 @@ func (r JSON) WriteContentType(w http.ResponseWriter) {
 	writeContentType(w, jsonContentType)
 }
 
-func (r JSON) WriteJSON(w http.ResponseWriter, obj interface{}) error {
+func (r JSON) WriteJSON(w http.ResponseWriter, obj any) error {
 	writeContentType(w, jsonContentType)
 	jsonBytes, err := encoding.GetCodec(json.Name).Marshal(obj)
 	if err != nil {

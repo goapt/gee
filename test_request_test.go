@@ -39,7 +39,7 @@ func TestNewJsonRequest(t *testing.T) {
 			"msg":  "ok",
 		})
 	})
-	resp, err := req.JSON(map[string]interface{}{"id": 1})
+	resp, err := req.JSON(map[string]any{"id": 1})
 	assert.NoError(t, err)
 	assert.Equal(t, gee.JsonContentType, resp.Header().Get("Content-Type"))
 }

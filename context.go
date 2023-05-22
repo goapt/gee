@@ -2,7 +2,7 @@ package gee
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -25,7 +25,7 @@ func (c *Context) getHttpStatus(status int) int {
 	return c.httpStatus
 }
 
-func (c *Context) ShouldBindUri(obj interface{}) error {
+func (c *Context) ShouldBindUri(obj any) error {
 	if _, ok := obj.(proto.Message); ok {
 		m := make(map[string][]string)
 		for _, v := range c.Params {
@@ -37,7 +37,7 @@ func (c *Context) ShouldBindUri(obj interface{}) error {
 	}
 }
 
-func (c *Context) ShouldBindQuery(obj interface{}) error {
+func (c *Context) ShouldBindQuery(obj any) error {
 	if _, ok := obj.(proto.Message); ok {
 		return c.ShouldBindWith(obj, binding.Query)
 	} else {
@@ -45,11 +45,11 @@ func (c *Context) ShouldBindQuery(obj interface{}) error {
 	}
 }
 
-func (c *Context) ShouldBindJSON(obj interface{}) error {
+func (c *Context) ShouldBindJSON(obj any) error {
 	return c.ShouldBindWith(obj, binding.JSON)
 }
 
-func (c *Context) ShouldBindBodyJSON(obj interface{}) error {
+func (c *Context) ShouldBindBodyJSON(obj any) error {
 	return c.ShouldBindBodyWith(obj, binding.JSON)
 }
 
@@ -59,11 +59,11 @@ func (c *Context) GetBody() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.Request.Body = ioutil.NopCloser(bytes.NewReader(body))
+	c.Request.Body = io.NopCloser(bytes.NewReader(body))
 	return body, nil
 }
 
-func (c *Context) BindJSON(obj interface{}) error {
+func (c *Context) BindJSON(obj any) error {
 	return c.MustBindWith(obj, binding.JSON)
 }
 
@@ -71,17 +71,17 @@ func (c *Context) Status(status int) {
 	c.httpStatus = status
 }
 
-func (c *Context) JSON(data interface{}) error {
+func (c *Context) JSON(data any) error {
 	c.Context.Render(c.getHttpStatus(200), &render.JSON{Data: data})
 	return nil
 }
 
-func (c *Context) XML(data interface{}) error {
+func (c *Context) XML(data any) error {
 	c.Context.XML(c.getHttpStatus(200), data)
 	return nil
 }
 
-func (c *Context) YAML(data interface{}) error {
+func (c *Context) YAML(data any) error {
 	c.Context.YAML(c.getHttpStatus(200), data)
 	return nil
 }
@@ -91,7 +91,7 @@ func (c *Context) Redirect(location string) error {
 	return nil
 }
 
-func (c *Context) String(format string, values ...interface{}) error {
+func (c *Context) String(format string, values ...any) error {
 	c.Context.String(c.getHttpStatus(200), format, values...)
 	return nil
 }

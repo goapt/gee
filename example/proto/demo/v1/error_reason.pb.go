@@ -118,7 +118,7 @@ func file_proto_demo_v1_error_reason_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_demo_v1_error_reason_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_demo_v1_error_reason_proto_goTypes = []interface{}{
+var file_proto_demo_v1_error_reason_proto_goTypes = []any{
 	(ErrorReason)(0), // 0: demo.v1.ErrorReason
 }
 var file_proto_demo_v1_error_reason_proto_depIdxs = []int32{
