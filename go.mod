@@ -10,7 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/google/uuid v1.3.0
-	github.com/prometheus/client_golang v1.15.1
+	github.com/prometheus/client_golang v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.14.4
 	go.opentelemetry.io/otel v1.16.0
@@ -47,7 +47,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.43.0 // indirect
-	github.com/prometheus/procfs v0.10.0 // indirect
+	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
