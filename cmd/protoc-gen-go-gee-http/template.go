@@ -7,7 +7,7 @@ import (
 	"text/template"
 )
 
-//go:embed template.go.tpl
+//go:embed template.gohtml
 var httpTemplate string
 
 type serviceDesc struct {

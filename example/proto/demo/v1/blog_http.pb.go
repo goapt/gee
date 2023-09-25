@@ -25,7 +25,7 @@ type BlogServiceHTTPServer interface {
 
 type BlogService struct {
 	server      BlogServiceHTTPServer
-	router      gee.IRoutes
+	router      gee.Router
 	middlewares []gee.Handler
 }
 
@@ -46,7 +46,7 @@ func (r *BlogService) Validate(in any) error {
 	return nil
 }
 
-func RegisterBlogServiceHTTPServer(r gee.IRoutes, srv BlogServiceHTTPServer, middlewares ...gee.Handler) {
+func RegisterBlogServiceHTTPServer(r gee.Router, srv BlogServiceHTTPServer, middlewares ...gee.Handler) {
 	s := &BlogService{
 		server:      srv,
 		router:      r,

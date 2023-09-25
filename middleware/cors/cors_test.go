@@ -7,26 +7,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/goapt/gee"
 	"github.com/stretchr/testify/assert"
 )
 
-func init() {
-	gin.SetMode(gin.TestMode)
-}
-
-func newTestRouter(config Config) *gee.Engine {
-	router := gee.New()
+func newTestRouter(config Config) *gee.Route {
+	router := gee.NewRouter()
 	router.Use(New(config))
-	router.GET("/", func(c *gee.Context) error {
-		return c.String("get")
+	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("get"))
 	})
-	router.POST("/", func(c *gee.Context) error {
-		return c.String("post")
+	router.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("post"))
 	})
-	router.PATCH("/", func(c *gee.Context) error {
-		return c.String("patch")
+	router.Patch("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("patch"))
 	})
 	return router
 }

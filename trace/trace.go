@@ -7,7 +7,8 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
@@ -17,8 +18,12 @@ import (
 
 // SetTracerProvider global trace provider
 func SetTracerProvider(url string, appName string, env string, rate float64) (func(), error) {
-	// Create the Jaeger exporter
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	exp, err := otlptrace.New(context.Background(),
+		otlptracegrpc.NewClient(
+			otlptracegrpc.WithEndpoint(url),
+			otlptracegrpc.WithInsecure(),
+		),
+	)
 	if err != nil {
 		return nil, err
 	}

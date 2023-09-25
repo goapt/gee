@@ -1,4 +1,4 @@
-package server
+package gee
 
 import (
 	"context"
@@ -38,16 +38,24 @@ func StopTimeout(t time.Duration) Option {
 	}
 }
 
+// IdleTimeout with server IdleTimeout.
+func IdleTimeout(t time.Duration) Option {
+	return func(s *Server) {
+		s.idleTimeout = t
+	}
+}
+
 type Server struct {
 	*http.Server
 	hander      http.Handler
 	address     string
 	stopTimeout time.Duration
+	idleTimeout time.Duration
 }
 
 func New(opts ...Option) *Server {
 	srv := &Server{
-		stopTimeout: 1 * time.Second,
+		stopTimeout: 3 * time.Second,
 	}
 
 	for _, o := range opts {
@@ -58,6 +66,11 @@ func New(opts ...Option) *Server {
 		Addr:    srv.address,
 		Handler: srv.hander,
 	}
+
+	if srv.idleTimeout != 0 {
+		srv.Server.IdleTimeout = srv.idleTimeout
+	}
+
 	return srv
 }
 
@@ -66,8 +79,8 @@ func (s *Server) Start(ctx context.Context) error {
 
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			return fmt.Errorf("HTTP listen: %s", err)
+		if err := s.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return fmt.Errorf("HTTP listen error: %s", err)
 		}
 		return nil
 	})
@@ -80,7 +93,7 @@ func (s *Server) Start(ctx context.Context) error {
 			_ = s.Stop(ctx)
 			return ctx.Err()
 		case <-c:
-			// sleep, wait for k8s pod release
+			// 休眠3秒钟，让k8s pod能够安全的卸载
 			log.Printf("[HTTP] Shutdown waiting %s\n", s.stopTimeout.String())
 			time.Sleep(s.stopTimeout)
 			err := s.Stop(ctx)

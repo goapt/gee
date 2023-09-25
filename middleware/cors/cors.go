@@ -2,6 +2,7 @@ package cors
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 	"time"
 
@@ -153,17 +154,19 @@ func DefaultConfig() Config {
 }
 
 // Default returns the location middleware with default configgeetion.
-func Default() gee.Handler {
+func Default() gee.Middleware {
 	config := DefaultConfig()
 	config.AllowAllOrigins = true
 	return New(config)
 }
 
 // New returns the location middleware with user-defined custom configuration.
-func New(config Config) gee.Handler {
+func New(config Config) gee.Middleware {
 	cors := newCors(config)
-	return func(c *gee.Context) error {
-		cors.applyCors(c.Context)
-		return nil
+	return func(handler http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			cors.applyCors(w, r)
+			handler.ServeHTTP(w, r)
+		})
 	}
 }

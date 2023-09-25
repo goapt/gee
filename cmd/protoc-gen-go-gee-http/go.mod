@@ -1,8 +1,8 @@
 module github.com/goapt/gee/cmd/protoc-gen-go-gee-http
 
-go 1.16
+go 1.20
 
 require (
-	google.golang.org/genproto v0.0.0-20210805201207-89edb61ffb67
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/genproto v0.0.0-20230731193218-e0aa005b6bdf
+	google.golang.org/protobuf v1.31.0
 )

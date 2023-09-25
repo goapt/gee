@@ -3,8 +3,6 @@ package cors
 import (
 	"net/http"
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
 type cors struct {
@@ -59,13 +57,13 @@ func newCors(config Config) *cors {
 	}
 }
 
-func (cors *cors) applyCors(c *gin.Context) {
-	origin := c.Request.Header.Get("Origin")
+func (cors *cors) applyCors(w http.ResponseWriter, r *http.Request) {
+	origin := r.Header.Get("Origin")
 	if len(origin) == 0 {
 		// request is not a CORS request
 		return
 	}
-	host := c.Request.Host
+	host := r.Host
 
 	if origin == "http://"+host || origin == "https://"+host {
 		// request is not a CORS request but have origin header.
@@ -74,19 +72,19 @@ func (cors *cors) applyCors(c *gin.Context) {
 	}
 
 	if !cors.validateOrigin(origin) {
-		c.AbortWithStatus(http.StatusForbidden)
+		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
-	if c.Request.Method == "OPTIONS" {
-		cors.handlePreflight(c)
-		defer c.AbortWithStatus(http.StatusNoContent) // Using 204 is better than 200 when the request status is OPTIONS
+	if r.Method == "OPTIONS" {
+		cors.handlePreflight(w)
+		defer w.WriteHeader(http.StatusNoContent) // Using 204 is better than 200 when the request status is OPTIONS
 	} else {
-		cors.handleNormal(c)
+		cors.handleNormal(w)
 	}
 
 	if !cors.allowAllOrigins {
-		c.Header("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Origin", origin)
 	}
 }
 
@@ -124,15 +122,15 @@ func (cors *cors) validateOrigin(origin string) bool {
 	return false
 }
 
-func (cors *cors) handlePreflight(c *gin.Context) {
-	header := c.Writer.Header()
+func (cors *cors) handlePreflight(w http.ResponseWriter) {
+	header := w.Header()
 	for key, value := range cors.preflightHeaders {
 		header[key] = value
 	}
 }
 
-func (cors *cors) handleNormal(c *gin.Context) {
-	header := c.Writer.Header()
+func (cors *cors) handleNormal(w http.ResponseWriter) {
+	header := w.Header()
 	for key, value := range cors.normalHeaders {
 		header[key] = value
 	}

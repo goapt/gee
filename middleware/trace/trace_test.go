@@ -3,7 +3,9 @@ package trace
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/goapt/gee"
@@ -16,23 +18,30 @@ func TestNewTrace(t *testing.T) {
 	sr := &tracetest.SpanRecorder{}
 	tp := trace.NewTracerProvider(trace.WithSpanProcessor(sr))
 	tr := tp.Tracer("trace/test")
-	var testHandler = func(c *gee.Context) error {
-		_, span := tr.Start(c.Request.Context(), "testHandler")
+	var testHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, span := tr.Start(r.Context(), "testHandler")
 		span.End()
-		c.Status(http.StatusInternalServerError)
-		return c.JSON(gee.H{
-			"code": "SystemError",
-			"msg":  "系统错误，请重试",
-		})
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("test"))
+	})
+
+	m := gee.NewRouter()
+	m.Use(New(WithAppName("test")))
+	m.Get("/dummy/impl", testHandler)
+
+	ts := httptest.NewServer(m)
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/dummy/impl")
+	if err != nil {
+		t.Fatal(err)
 	}
-	req := gee.NewTestRequest("/dummy/impl", New(WithAppName("test")), testHandler)
-	resp, err := req.Get()
-	assert.NoError(t, err)
-	assert.Equal(t, 500, resp.Code)
-	assert.JSONEq(t, `{"code":"SystemError","msg":"系统错误，请重试"}`, resp.GetBodyString())
+	defer resp.Body.Close()
+	respBody, _ := io.ReadAll(resp.Body)
+	assert.Equal(t, 500, resp.StatusCode)
+	assert.JSONEq(t, `test`, string(respBody))
 
 	spans := sr.Ended()
-
 	for _, ss := range spans {
 		b, _ := json.Marshal(ss.Attributes())
 		fmt.Println("Trace:", ss.Name(), string(b))

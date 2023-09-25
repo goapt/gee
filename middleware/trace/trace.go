@@ -40,34 +40,35 @@ type tracing struct {
 	propagator propagation.TextMapPropagator
 }
 
-func (t *tracing) apply(c *gee.Context) {
-	savedCtx := c.Request.Context()
+func (t *tracing) apply(handler http.Handler, w http.ResponseWriter, r *http.Request) {
+	savedCtx := r.Context()
 	defer func() {
-		c.Request = c.Request.WithContext(savedCtx)
+		r = r.WithContext(savedCtx)
 	}()
 
-	ctx := t.propagator.Extract(c.Request.Context(), propagation.HeaderCarrier(c.Request.Header))
+	ctx := t.propagator.Extract(r.Context(), propagation.HeaderCarrier(r.Header))
 	opts := []trace.SpanStartOption{
-		trace.WithAttributes(semconv.NetAttributesFromHTTPRequest("tcp", c.Request)...),
-		trace.WithAttributes(semconv.EndUserAttributesFromHTTPRequest(c.Request)...),
-		trace.WithAttributes(semconv.HTTPServerAttributesFromHTTPRequest(t.appName, c.FullPath(), c.Request)...),
+		trace.WithAttributes(semconv.NetAttributesFromHTTPRequest("tcp", r)...),
+		trace.WithAttributes(semconv.EndUserAttributesFromHTTPRequest(r)...),
+		trace.WithAttributes(semconv.HTTPServerAttributesFromHTTPRequest(t.appName, r.URL.Path, r)...),
 		trace.WithSpanKind(trace.SpanKindServer),
 	}
 
-	spanName := c.FullPath()
+	spanName := r.URL.Path
 	if spanName == "" {
-		spanName = fmt.Sprintf("HTTP %s route not found", c.Request.Method)
+		spanName = fmt.Sprintf("HTTP %s route not found", r.Method)
 	}
 
 	ctx, span := t.tracer.Start(ctx, spanName, opts...)
 	defer span.End()
-	c.Request = c.Request.WithContext(ctx)
+	r = r.WithContext(ctx)
 
-	c.Next()
+	ww := gee.NewWrapResponseWriter(w)
+	handler.ServeHTTP(ww, r)
 
-	status := c.Writer.Status()
+	status := ww.Status()
 	if status != http.StatusOK {
-		span.RecordError(errors.New(string(c.Response.Body())))
+		span.RecordError(errors.New(string(ww.Body())))
 	}
 
 	attrs := semconv.HTTPAttributesFromHTTPStatusCode(status)
@@ -76,7 +77,7 @@ func (t *tracing) apply(c *gee.Context) {
 	span.SetStatus(spanStatus, spanMessage)
 }
 
-func New(opts ...Option) gee.Handler {
+func New(opts ...Option) gee.Middleware {
 	tr := &tracing{
 		appName:    "unknow",
 		propagator: otel.GetTextMapPropagator(),
@@ -87,8 +88,9 @@ func New(opts ...Option) gee.Handler {
 		o(tr)
 	}
 
-	return func(c *gee.Context) error {
-		tr.apply(c)
-		return nil
+	return func(handler http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			tr.apply(handler, w, r)
+		})
 	}
 }

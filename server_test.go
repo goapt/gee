@@ -1,4 +1,4 @@
-package server
+package gee
 
 import (
 	"context"
@@ -15,12 +15,12 @@ func TestNew(t *testing.T) {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
 	}
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", fn)
+	r := NewRouter()
+	r.Get("/", fn)
 	t.Run("cancel", func(t *testing.T) {
 		srv := New(
 			Address(":8888"),
-			Handler(mux),
+			Handler(r),
 			StopTimeout(3*time.Second),
 		)
 		ctx, cancel := context.WithCancel(context.Background())
@@ -35,7 +35,7 @@ func TestNew(t *testing.T) {
 	t.Run("kill", func(t *testing.T) {
 		srv := New(
 			Address(":8888"),
-			Handler(mux),
+			Handler(r),
 			StopTimeout(1*time.Second),
 		)
 		go func() {
