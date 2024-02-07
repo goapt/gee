@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"syscall"
 	"testing"
 	"time"
@@ -16,7 +17,7 @@ func TestNew(t *testing.T) {
 		fmt.Fprintf(w, "OK")
 	}
 	r := NewRouter()
-	r.Get("/", fn)
+	r.Get("/", http.HandlerFunc(fn))
 	t.Run("cancel", func(t *testing.T) {
 		srv := New(
 			Address(":8888"),
@@ -45,4 +46,46 @@ func TestNew(t *testing.T) {
 		err := srv.Start(context.Background())
 		assert.NoError(t, err)
 	})
+}
+
+func TestNew2(t *testing.T) {
+	md1 := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			t.Log(1)
+			defer func() {
+				t.Log(4)
+				body := Response(w).Body()
+				t.Log(string(body))
+			}()
+			next.ServeHTTP(w, r)
+			t.Log(3)
+		})
+	}
+
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		t.Log(2)
+		w.Write([]byte("123"))
+	}
+	r := NewRouter()
+	r.Use(md1)
+	r.Get("/", http.HandlerFunc(fn))
+
+	r2 := r.Group("/api")
+
+	r2.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			t.Log("group")
+			next.ServeHTTP(w, r)
+		})
+	})
+
+	r2.Get("/test", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		t.Log(5)
+		writer.Write([]byte("test"))
+	}))
+
+	s := httptest.NewServer(r)
+	http.Get(s.URL)
+	s2 := httptest.NewServer(r2)
+	http.Get(s2.URL + "/api/test")
 }

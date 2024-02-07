@@ -14,13 +14,13 @@ func SetDebugToken(token string) {
 	debugToken = token
 }
 
-func authDebug(h http.Handler) http.Handler {
+var authDebug = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("token") != debugToken {
-			w.WriteHeader(http.StatusForbidden)
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
-		h.ServeHTTP(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
 
@@ -32,23 +32,20 @@ func DebugRoute(r Router, path ...string) {
 	}
 	r.Use(authDebug)
 	// pporf
-	r.Group(p, func(r Router) {
-		r.Get("/", pprof.Index)
-		r.Get("/cmdline", pprof.Cmdline)
-		r.Get("/profile", pprof.Profile)
-		r.Post("/symbol", pprof.Symbol)
-		r.Get("/symbol", pprof.Symbol)
-		r.Get("/trace", pprof.Trace)
-		r.Handle("/allocs", pprof.Handler("allocs"))
-		r.Handle("/block", pprof.Handler("block"))
-		r.Handle("/goroutine", pprof.Handler("goroutine"))
-		r.Handle("/heap", pprof.Handler("heap"))
-		r.Handle("/mutex", pprof.Handler("mutex"))
-		r.Handle("/threadcreate", pprof.Handler("threadcreate"))
-	})
+	g := r.Group(p)
+	g.Get("/", http.HandlerFunc(pprof.Index))
+	g.Get("/cmdline", http.HandlerFunc(pprof.Cmdline))
+	g.Get("/profile", http.HandlerFunc(pprof.Profile))
+	g.Post("/symbol", http.HandlerFunc(pprof.Symbol))
+	g.Get("/symbol", http.HandlerFunc(pprof.Symbol))
+	g.Get("/trace", http.HandlerFunc(pprof.Trace))
+	g.Handle("/allocs", pprof.Handler("allocs"))
+	g.Handle("/block", pprof.Handler("block"))
+	g.Handle("/goroutine", pprof.Handler("goroutine"))
+	g.Handle("/heap", pprof.Handler("heap"))
+	g.Handle("/mutex", pprof.Handler("mutex"))
+	g.Handle("/threadcreate", pprof.Handler("threadcreate"))
 
 	// prometheus
-	r.Group(p, func(r Router) {
-		r.Handle("/metrics", promhttp.Handler())
-	})
+	g.Handle("/metrics", promhttp.Handler())
 }

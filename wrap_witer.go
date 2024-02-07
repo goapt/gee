@@ -222,6 +222,10 @@ func (f *http2FancyWriter) Flush() {
 
 var _ http.Flusher = &http2FancyWriter{}
 
+func Response(w http.ResponseWriter) WrapResponseWriter {
+	return w.(WrapResponseWriter)
+}
+
 func ReadRequestBody(r *http.Request) ([]byte, error) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
