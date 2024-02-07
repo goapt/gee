@@ -63,9 +63,8 @@ func (t *tracing) apply(handler http.Handler, w http.ResponseWriter, r *http.Req
 	defer span.End()
 	r = r.WithContext(ctx)
 
-	ww := gee.NewWrapResponseWriter(w)
-	handler.ServeHTTP(ww, r)
-
+	handler.ServeHTTP(w, r)
+	ww := gee.Response(w)
 	status := ww.Status()
 	if status != http.StatusOK {
 		span.RecordError(errors.New(string(ww.Body())))
