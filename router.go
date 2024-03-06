@@ -1,6 +1,8 @@
 package gee
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
 	"path"
 )
@@ -8,14 +10,14 @@ import (
 // Router defines all router handle interface.
 type Router interface {
 	Use(middlewares ...Middleware)
-	Any(pattern string, h http.Handler)
-	Get(pattern string, h http.Handler)
-	Post(pattern string, h http.Handler)
-	Delete(pattern string, h http.Handler)
-	Patch(pattern string, h http.Handler)
-	Put(pattern string, h http.Handler)
-	Options(pattern string, h http.Handler)
-	Head(pattern string, h http.Handler)
+	Any(pattern string, h http.HandlerFunc)
+	Get(pattern string, h http.HandlerFunc)
+	Post(pattern string, h http.HandlerFunc)
+	Delete(pattern string, h http.HandlerFunc)
+	Patch(pattern string, h http.HandlerFunc)
+	Put(pattern string, h http.HandlerFunc)
+	Options(pattern string, h http.HandlerFunc)
+	Head(pattern string, h http.HandlerFunc)
 	Group(pattern string) Router
 	Handle(pattern string, h http.Handler)
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
@@ -40,13 +42,14 @@ func NewRouter() *Route {
 func (r *Route) Handle(pattern string, h http.Handler) {
 	r.handler = chain(r.mux, r.middlewares)
 	r.mux.Handle(pattern, h)
+	slog.Debug(fmt.Sprintf("[Gee-debug] %-25s  --> %s", pattern, nameOfFunction(h)))
 }
 
 func (r *Route) Use(h ...Middleware) {
 	r.middlewares = append(r.middlewares, h...)
 }
 
-func (r *Route) Any(pattern string, h http.Handler) {
+func (r *Route) Any(pattern string, h http.HandlerFunc) {
 	r.Get(pattern, h)
 	r.Post(pattern, h)
 	r.Delete(pattern, h)
@@ -56,31 +59,31 @@ func (r *Route) Any(pattern string, h http.Handler) {
 	r.Head(pattern, h)
 }
 
-func (r *Route) Get(pattern string, h http.Handler) {
+func (r *Route) Get(pattern string, h http.HandlerFunc) {
 	r.Handle(r.getPattern("GET", pattern), h)
 }
 
-func (r *Route) Post(pattern string, h http.Handler) {
+func (r *Route) Post(pattern string, h http.HandlerFunc) {
 	r.Handle(r.getPattern("POST", pattern), h)
 }
 
-func (r *Route) Delete(pattern string, h http.Handler) {
+func (r *Route) Delete(pattern string, h http.HandlerFunc) {
 	r.Handle(r.getPattern("DELETE", pattern), h)
 }
 
-func (r *Route) Patch(pattern string, h http.Handler) {
+func (r *Route) Patch(pattern string, h http.HandlerFunc) {
 	r.Handle(r.getPattern("PATCH", pattern), h)
 }
 
-func (r *Route) Put(pattern string, h http.Handler) {
+func (r *Route) Put(pattern string, h http.HandlerFunc) {
 	r.mux.Handle(r.getPattern("PUT", pattern), h)
 }
 
-func (r *Route) Options(pattern string, h http.Handler) {
+func (r *Route) Options(pattern string, h http.HandlerFunc) {
 	r.mux.Handle(r.getPattern("OPTIONS", pattern), h)
 }
 
-func (r *Route) Head(pattern string, h http.Handler) {
+func (r *Route) Head(pattern string, h http.HandlerFunc) {
 	r.Handle(r.getPattern("HEAD", pattern), h)
 }
 

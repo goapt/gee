@@ -62,13 +62,12 @@ func TestNew2(t *testing.T) {
 		})
 	}
 
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		t.Log(2)
-		w.Write([]byte("123"))
-	}
 	r := NewRouter()
 	r.Use(md1)
-	r.Get("/", http.HandlerFunc(fn))
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		t.Log(2)
+		w.Write([]byte("123"))
+	})
 
 	r2 := r.Group("/api")
 
@@ -79,10 +78,10 @@ func TestNew2(t *testing.T) {
 		})
 	})
 
-	r2.Get("/test", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+	r2.Get("/test", func(writer http.ResponseWriter, request *http.Request) {
 		t.Log(5)
 		writer.Write([]byte("test"))
-	}))
+	})
 
 	s := httptest.NewServer(r)
 	http.Get(s.URL)
